@@ -1,0 +1,14 @@
+<resources>
+    <string name="explorer_title">Duyệt tệp tin</string>
+    <string name="explorer_empty_folder">Thư mục trống</string>
+    <string name="explorer_view_mode">Chế độ xem</string>
+    <string name="explorer_sort">Sắp xếp</string>
+    <string name="explorer_hidden_files">Tệp ẩn</string>
+    <string name="explorer_items_count">%1$d mục</string>
+    <string name="explorer_sort_name_asc">Tên (A-Z)</string>
+    <string name="explorer_sort_name_desc">Tên (Z-A)</string>
+    <string name="explorer_sort_date_desc">Mới nhất</string>
+    <string name="explorer_sort_date_asc">Cũ nhất</string>
+    <string name="explorer_sort_size_desc">Kích thước (Lớn trước)</string>
+    <string name="explorer_sort_size_asc">Kích thước (Nhỏ trước)</string>
+</resources>

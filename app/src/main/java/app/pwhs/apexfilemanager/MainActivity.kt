@@ -1,19 +1,18 @@
 package app.pwhs.apexfilemanager
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.viewModels
 import app.pwhs.apexfilemanager.core.base.BaseActivity
 import app.pwhs.apexfilemanager.core.designsystem.theme.ApexFileManagerTheme
+import app.pwhs.apexfilemanager.features.explorer.ExplorerActivity
 import app.pwhs.apexfilemanager.features.home.HomeScreen
 import app.pwhs.apexfilemanager.features.home.HomeViewModel
-import app.pwhs.apexfilemanager.features.home.HomeViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity() {
 
-    private val homeViewModel: HomeViewModel by viewModels {
-        HomeViewModelFactory(application)
-    }
+    private val homeViewModel: HomeViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,8 +21,7 @@ class MainActivity : BaseActivity() {
                 HomeScreen(
                     viewModel = homeViewModel,
                     onNavigateToExplorer = { path ->
-                        // Sẽ khởi chạy ExplorerActivity qua Intent ở Phase tiếp theo
-                        Toast.makeText(this, path, Toast.LENGTH_SHORT).show()
+                        startActivity(ExplorerActivity.createIntent(this, path))
                     }
                 )
             }

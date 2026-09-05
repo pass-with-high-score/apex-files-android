@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
 
     <application
+        android:name=".ApexApplication"
         android:allowBackup="true"
         android:requestLegacyExternalStorage="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -27,6 +28,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="app.pwhs.apexfilemanager.features.explorer.ExplorerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ApexFileManager" />
     </application>
 
 </manifest>
