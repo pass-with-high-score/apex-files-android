@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">ApexFileManager</string>
+    <string name="home_title">Apex File Manager</string>
+    <string name="home_storage_overview">Dung lượng bộ nhớ</string>
+    <string name="home_internal_storage">Bộ nhớ trong</string>
+    <string name="home_storage_used_format">%1$s / %2$s</string>
+    <string name="home_btn_refresh">Làm mới</string>
+    <string name="home_grant_permission">Cấp quyền truy cập tệp</string>
+    <string name="home_permission_desc">Ứng dụng cần quyền quản lý tệp để hiển thị và thao tác với các tệp tin trên thiết bị của bạn.</string>
+    <string name="home_permission_btn">Cấp quyền ngay</string>
+    <string name="home_empty_storage">Không tìm thấy phân vùng lưu trữ nào</string>
 </resources>

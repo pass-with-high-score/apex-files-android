@@ -1,4 +1,4 @@
-package app.pwhs.apexfilemanager.ui.theme
+package app.pwhs.apexfilemanager.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
