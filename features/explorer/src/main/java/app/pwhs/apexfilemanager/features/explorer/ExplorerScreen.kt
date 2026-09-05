@@ -88,6 +88,28 @@ fun ExplorerScreen(
                         Toast.makeText(context, "Không thể mở tệp nén", Toast.LENGTH_SHORT).show()
                     }
                 }
+                is ExplorerUiEvent.OpenTextEditor -> {
+                    try {
+                        val clazz = Class.forName("app.pwhs.apexfilemanager.features.viewer.text.TextEditorActivity")
+                        val intent = android.content.Intent(context, clazz).apply {
+                            putExtra("extra_file_path", event.path)
+                        }
+                        context.startActivity(intent)
+                    } catch (_: Exception) {
+                        Toast.makeText(context, "Không thể mở trình soạn thảo văn bản", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                is ExplorerUiEvent.OpenImageViewer -> {
+                    try {
+                        val clazz = Class.forName("app.pwhs.apexfilemanager.features.viewer.image.ImageViewerActivity")
+                        val intent = android.content.Intent(context, clazz).apply {
+                            putExtra("extra_image_path", event.path)
+                        }
+                        context.startActivity(intent)
+                    } catch (_: Exception) {
+                        Toast.makeText(context, "Không thể mở trình xem ảnh", Toast.LENGTH_SHORT).show()
+                    }
+                }
                 is ExplorerUiEvent.ShowToast -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }

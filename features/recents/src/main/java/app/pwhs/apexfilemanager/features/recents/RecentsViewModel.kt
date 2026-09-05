@@ -36,8 +36,17 @@ class RecentsViewModel(
 
     private fun handleFileClick(item: app.pwhs.apexfilemanager.core.storage.domain.model.FileItem) {
         val ext = item.name.substringAfterLast('.', "").lowercase()
-        if (ext in setOf("zip", "rar", "7z", "tar", "gz", "bz2", "xz")) {
+        if (ext in setOf("zip", "rar", "7z", "tar", "gz", "bz2", "xz", "apk", "jar")) {
             sendEvent(RecentsUiEvent.OpenArchive(item.path))
+        } else if (item.mimeType.startsWith("image/") || ext in setOf("jpg", "jpeg", "png", "webp", "gif", "bmp")) {
+            sendEvent(RecentsUiEvent.OpenImageViewer(item.path))
+        } else if (item.mimeType.startsWith("text/") || ext in setOf(
+                "txt", "json", "xml", "html", "htm", "css", "js", "ts", "kt", "java",
+                "py", "c", "cpp", "h", "md", "log", "properties", "gradle", "sh", "yml",
+                "yaml", "ini", "conf", "env", "sql", "csv"
+            )
+        ) {
+            sendEvent(RecentsUiEvent.OpenTextEditor(item.path))
         } else {
             sendEvent(RecentsUiEvent.OpenFileExternal(item.path, item.mimeType))
         }

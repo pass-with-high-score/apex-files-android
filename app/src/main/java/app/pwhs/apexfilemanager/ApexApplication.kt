@@ -7,6 +7,7 @@ import app.pwhs.apexfilemanager.features.archive.di.archiveModule
 import app.pwhs.apexfilemanager.features.explorer.di.explorerModule
 import app.pwhs.apexfilemanager.features.recents.di.recentsModule
 import app.pwhs.apexfilemanager.features.search.di.searchModule
+import app.pwhs.apexfilemanager.features.viewer.di.viewerModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -26,7 +27,8 @@ class ApexApplication : Application() {
                 explorerModule,
                 searchModule,
                 archiveModule,
-                recentsModule
+                recentsModule,
+                viewerModule
             )
         }
     }

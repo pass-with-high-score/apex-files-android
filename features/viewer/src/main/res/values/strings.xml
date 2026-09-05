@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="viewer_text_title">Trình sửa văn bản</string>
+    <string name="viewer_save">Lưu</string>
+    <string name="viewer_save_success">Đã lưu tệp thành công</string>
+    <string name="viewer_save_failed">Lưu tệp thất bại: %1$s</string>
+    <string name="viewer_search_hint">Tìm trong tệp…</string>
+    <string name="viewer_word_wrap">Ngắt dòng</string>
+    <string name="viewer_line_count">%1$d dòng</string>
+    <string name="viewer_char_count">%1$d ký tự</string>
+    <string name="viewer_file_stats">%1$d dòng • %2$d ký tự • %3$s</string>
+    <string name="viewer_image_title">Xem ảnh</string>
+    <string name="viewer_image_rotate">Xoay ảnh</string>
+    <string name="viewer_image_info">Thông tin ảnh</string>
+    <string name="viewer_image_dimensions">Độ phân giải: %1$d × %2$d px</string>
+    <string name="viewer_image_size">Kích thước: %1$s</string>
+    <string name="viewer_image_date">Ngày sửa: %1$s</string>
+    <string name="viewer_image_path">Đường dẫn: %1$s</string>
+    <string name="viewer_error_load">Không thể tải tệp: %1$s</string>
+    <string name="viewer_error_image_decode">Không thể giải mã hình ảnh này</string>
+    <string name="viewer_read_only">Chỉ đọc</string>
+    <string name="viewer_modified">Đã sửa</string>
+    <string name="viewer_close">Đóng</string>
+</resources>

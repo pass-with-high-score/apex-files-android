@@ -85,6 +85,10 @@ class ExplorerViewModel(
             loadDirectory(item.path)
         } else if (isArchiveFile(item.name)) {
             sendEvent(ExplorerUiEvent.OpenArchive(item.path))
+        } else if (isImageFile(item.name, item.mimeType)) {
+            sendEvent(ExplorerUiEvent.OpenImageViewer(item.path))
+        } else if (isTextOrCodeFile(item.name, item.mimeType)) {
+            sendEvent(ExplorerUiEvent.OpenTextEditor(item.path))
         } else {
             sendEvent(ExplorerUiEvent.OpenFileExternal(item.path, item.mimeType))
         }
@@ -92,7 +96,23 @@ class ExplorerViewModel(
 
     private fun isArchiveFile(name: String): Boolean {
         val ext = name.substringAfterLast('.', "").lowercase()
-        return ext in setOf("zip", "rar", "7z", "tar", "gz", "bz2", "xz")
+        return ext in setOf("zip", "rar", "7z", "tar", "gz", "bz2", "xz", "apk", "jar")
+    }
+
+    private fun isImageFile(name: String, mimeType: String): Boolean {
+        if (mimeType.startsWith("image/")) return true
+        val ext = name.substringAfterLast('.', "").lowercase()
+        return ext in setOf("jpg", "jpeg", "png", "webp", "gif", "bmp")
+    }
+
+    private fun isTextOrCodeFile(name: String, mimeType: String): Boolean {
+        if (mimeType.startsWith("text/")) return true
+        val ext = name.substringAfterLast('.', "").lowercase()
+        return ext in setOf(
+            "txt", "json", "xml", "html", "htm", "css", "js", "ts", "kt", "java",
+            "py", "c", "cpp", "h", "md", "log", "properties", "gradle", "sh", "yml",
+            "yaml", "ini", "conf", "env", "sql", "csv"
+        )
     }
 
     private fun toggleSelect(item: FileItem) {
