@@ -52,4 +52,14 @@ val storageModule = module {
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetApkInfoUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetInstalledAppsUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.BackupAppUseCase(get()) }
+
+    single<app.pwhs.apexfilemanager.core.storage.domain.repository.NetworkServerRepository> {
+        app.pwhs.apexfilemanager.core.storage.data.repository.NetworkServerRepositoryImpl(androidContext())
+    }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetNetworkServersUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.SaveNetworkServerUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.DeleteNetworkServerUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.TestNetworkConnectionUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.ListRemoteFilesUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.DownloadRemoteFileUseCase(get()) }
 }

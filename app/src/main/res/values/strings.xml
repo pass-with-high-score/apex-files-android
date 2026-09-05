@@ -21,4 +21,6 @@
     <string name="home_apps_desc">Xem ứng dụng đã cài, sao lưu và cài đặt APK</string>
     <string name="home_wifishare_title">Chia sẻ Wi-Fi</string>
     <string name="home_wifishare_desc">Truy cập và chuyển tệp không dây qua trình duyệt web</string>
+    <string name="home_network_title">Lưu trữ mạng (NAS)</string>
+    <string name="home_network_desc">Kết nối máy chủ SMB, FTP, SFTP từ xa</string>
 </resources>

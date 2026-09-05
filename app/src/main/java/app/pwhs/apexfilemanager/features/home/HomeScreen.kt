@@ -18,8 +18,10 @@ import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Wifi
+import app.pwhs.apexfilemanager.features.home.components.QuickAccessCard
 import app.pwhs.apexfilemanager.features.home.components.StorageVolumeCard
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -59,6 +61,7 @@ fun HomeScreen(
     onNavigateToCleaner: () -> Unit,
     onNavigateToApps: () -> Unit,
     onNavigateToWifiShare: () -> Unit,
+    onNavigateToNetwork: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -90,6 +93,9 @@ fun HomeScreen(
                 }
                 is HomeUiEvent.NavigateToWifiShare -> {
                     onNavigateToWifiShare()
+                }
+                is HomeUiEvent.NavigateToNetwork -> {
+                    onNavigateToNetwork()
                 }
             }
         }
@@ -199,198 +205,57 @@ fun HomeContent(
                         }
 
                         item {
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { onAction(HomeUiAction.RecentsClick) },
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.AccessTime,
-                                        contentDescription = stringResource(R.string.home_recents_title),
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.padding(end = 16.dp)
-                                    )
-                                    Column {
-                                        Text(
-                                            text = stringResource(R.string.home_recents_title),
-                                            style = MaterialTheme.typography.titleSmall,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        Spacer(modifier = Modifier.height(2.dp))
-                                        Text(
-                                            text = stringResource(R.string.home_recents_desc),
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                }
-                            }
+                            QuickAccessCard(
+                                icon = Icons.Default.AccessTime,
+                                title = stringResource(R.string.home_recents_title),
+                                description = stringResource(R.string.home_recents_desc),
+                                onClick = { onAction(HomeUiAction.RecentsClick) }
+                            )
                         }
 
                         item {
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { onAction(HomeUiAction.CleanerClick) },
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.CleaningServices,
-                                        contentDescription = stringResource(R.string.home_cleaner_title),
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.padding(end = 16.dp)
-                                    )
-                                    Column {
-                                        Text(
-                                            text = stringResource(R.string.home_cleaner_title),
-                                            style = MaterialTheme.typography.titleSmall,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        Spacer(modifier = Modifier.height(2.dp))
-                                        Text(
-                                            text = stringResource(R.string.home_cleaner_desc),
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                }
-                            }
+                            QuickAccessCard(
+                                icon = Icons.Default.CleaningServices,
+                                title = stringResource(R.string.home_cleaner_title),
+                                description = stringResource(R.string.home_cleaner_desc),
+                                onClick = { onAction(HomeUiAction.CleanerClick) }
+                            )
                         }
 
                         item {
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { onAction(HomeUiAction.TrashClick) },
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.DeleteSweep,
-                                        contentDescription = stringResource(R.string.home_trash_title),
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.padding(end = 16.dp)
-                                    )
-                                    Column {
-                                        Text(
-                                            text = stringResource(R.string.home_trash_title),
-                                            style = MaterialTheme.typography.titleSmall,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        Spacer(modifier = Modifier.height(2.dp))
-                                        Text(
-                                            text = stringResource(R.string.home_trash_desc),
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                }
-                            }
+                            QuickAccessCard(
+                                icon = Icons.Default.DeleteSweep,
+                                title = stringResource(R.string.home_trash_title),
+                                description = stringResource(R.string.home_trash_desc),
+                                onClick = { onAction(HomeUiAction.TrashClick) }
+                            )
                         }
 
                         item {
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { onAction(HomeUiAction.AppsClick) },
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Android,
-                                        contentDescription = stringResource(R.string.home_apps_title),
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.padding(end = 16.dp)
-                                    )
-                                    Column {
-                                        Text(
-                                            text = stringResource(R.string.home_apps_title),
-                                            style = MaterialTheme.typography.titleSmall,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        Spacer(modifier = Modifier.height(2.dp))
-                                        Text(
-                                            text = stringResource(R.string.home_apps_desc),
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                }
-                            }
+                            QuickAccessCard(
+                                icon = Icons.Default.Android,
+                                title = stringResource(R.string.home_apps_title),
+                                description = stringResource(R.string.home_apps_desc),
+                                onClick = { onAction(HomeUiAction.AppsClick) }
+                            )
                         }
 
                         item {
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { onAction(HomeUiAction.WifiShareClick) },
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Wifi,
-                                        contentDescription = stringResource(R.string.home_wifishare_title),
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.padding(end = 16.dp)
-                                    )
-                                    Column {
-                                        Text(
-                                            text = stringResource(R.string.home_wifishare_title),
-                                            style = MaterialTheme.typography.titleSmall,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        Spacer(modifier = Modifier.height(2.dp))
-                                        Text(
-                                            text = stringResource(R.string.home_wifishare_desc),
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                }
-                            }
+                            QuickAccessCard(
+                                icon = Icons.Default.Wifi,
+                                title = stringResource(R.string.home_wifishare_title),
+                                description = stringResource(R.string.home_wifishare_desc),
+                                onClick = { onAction(HomeUiAction.WifiShareClick) }
+                            )
+                        }
+
+                        item {
+                            QuickAccessCard(
+                                icon = Icons.Default.Dns,
+                                title = stringResource(R.string.home_network_title),
+                                description = stringResource(R.string.home_network_desc),
+                                onClick = { onAction(HomeUiAction.NetworkClick) }
+                            )
                         }
                     }
                 }

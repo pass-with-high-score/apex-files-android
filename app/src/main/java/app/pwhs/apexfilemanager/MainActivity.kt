@@ -41,6 +41,9 @@ class MainActivity : BaseActivity() {
                     },
                     onNavigateToWifiShare = {
                         startActivity(app.pwhs.apexfilemanager.features.wifishare.WifiShareActivity.createIntent(this))
+                    },
+                    onNavigateToNetwork = {
+                        startActivity(app.pwhs.apexfilemanager.features.network.list.NetworkServerActivity.createIntent(this))
                     }
                 )
             }

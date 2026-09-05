@@ -33,6 +33,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.koin.android)
     implementation(libs.zip4j)
+    implementation(libs.commons.net)
+    implementation(libs.smbj)
+    implementation(libs.jsch)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

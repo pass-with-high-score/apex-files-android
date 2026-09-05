@@ -49,6 +49,9 @@ class HomeViewModel(
             is HomeUiAction.WifiShareClick -> {
                 sendEvent(HomeUiEvent.NavigateToWifiShare)
             }
+            is HomeUiAction.NetworkClick -> {
+                sendEvent(HomeUiEvent.NavigateToNetwork)
+            }
             is HomeUiAction.VolumeClick -> {
                 sendEvent(HomeUiEvent.NavigateToExplorer(action.volume.path))
             }

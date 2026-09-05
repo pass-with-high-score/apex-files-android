@@ -97,6 +97,16 @@
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
+        <activity
+            android:name="app.pwhs.apexfilemanager.features.network.list.NetworkServerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ApexFileManager" />
+
+        <activity
+            android:name="app.pwhs.apexfilemanager.features.network.explorer.RemoteExplorerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ApexFileManager" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

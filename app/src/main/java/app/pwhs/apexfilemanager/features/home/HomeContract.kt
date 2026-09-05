@@ -29,6 +29,7 @@ sealed interface HomeUiAction : UiAction {
     data object CleanerClick : HomeUiAction
     data object AppsClick : HomeUiAction
     data object WifiShareClick : HomeUiAction
+    data object NetworkClick : HomeUiAction
     data class VolumeClick(val volume: StorageVolume) : HomeUiAction
 }
 
@@ -44,4 +45,5 @@ sealed interface HomeUiEvent : UiEvent {
     data object NavigateToCleaner : HomeUiEvent
     data object NavigateToApps : HomeUiEvent
     data object NavigateToWifiShare : HomeUiEvent
+    data object NavigateToNetwork : HomeUiEvent
 }

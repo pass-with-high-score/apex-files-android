@@ -1,0 +1,30 @@
+<resources>
+    <string name="network_title">Lưu trữ mạng (NAS)</string>
+    <string name="network_add_server">Thêm kết nối mới</string>
+    <string name="network_edit_server">Chỉnh sửa kết nối</string>
+    <string name="network_delete_server">Xóa kết nối</string>
+    <string name="network_empty_servers">Chưa có kết nối nào. Nhấn nút \'+\' để thêm máy chủ mạng hoặc NAS.</string>
+    <string name="network_server_name">Tên hiển thị</string>
+    <string name="network_protocol">Giao thức</string>
+    <string name="network_host">Địa chỉ Host / IP</string>
+    <string name="network_port">Cổng (Port)</string>
+    <string name="network_username">Tên người dùng</string>
+    <string name="network_password">Mật khẩu</string>
+    <string name="network_anonymous">Đăng nhập ẩn danh (Anonymous)</string>
+    <string name="network_share_or_path">Thư mục chia sẻ (Share/Path)</string>
+    <string name="network_test_connection">Kiểm tra kết nối</string>
+    <string name="network_save">Lưu</string>
+    <string name="network_cancel">Hủy</string>
+    <string name="network_delete">Xóa</string>
+    <string name="network_testing">Đang kiểm tra kết nối...</string>
+    <string name="network_test_success">Kết nối thành công!</string>
+    <string name="network_test_failed">Kết nối thất bại: %1$s</string>
+    <string name="network_server_saved">Đã lưu kết nối mạng</string>
+    <string name="network_server_deleted">Đã xóa kết nối mạng</string>
+    <string name="network_delete_confirm">Bạn có chắc chắn muốn xóa kết nối này?</string>
+    <string name="network_remote_explorer_title">Duyệt tệp từ xa</string>
+    <string name="network_download_started">Bắt đầu tải xuống...</string>
+    <string name="network_download_success">Đã tải về thư mục Tải xuống: %1$s</string>
+    <string name="network_download_failed">Tải xuống thất bại: %1$s</string>
+    <string name="network_empty_folder">Thư mục từ xa trống</string>
+</resources>
