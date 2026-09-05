@@ -11,4 +11,25 @@
     <string name="explorer_sort_date_asc">Cũ nhất</string>
     <string name="explorer_sort_size_desc">Kích thước (Lớn trước)</string>
     <string name="explorer_sort_size_asc">Kích thước (Nhỏ trước)</string>
+
+    <string name="explorer_create_folder">Tạo thư mục mới</string>
+    <string name="explorer_folder_name">Tên thư mục</string>
+    <string name="explorer_rename">Đổi tên</string>
+    <string name="explorer_new_name">Tên mới</string>
+    <string name="explorer_delete">Xóa</string>
+    <string name="explorer_delete_confirm_title">Xác nhận xóa</string>
+    <string name="explorer_delete_confirm_msg">Bạn có chắc chắn muốn xóa %1$d mục đã chọn không? Thao tác này không thể hoàn tác.</string>
+    <string name="explorer_copy">Sao chép</string>
+    <string name="explorer_move">Di chuyển</string>
+    <string name="explorer_paste">Dán vào đây</string>
+    <string name="explorer_cancel">Hủy</string>
+    <string name="explorer_select_all">Chọn tất cả</string>
+    <string name="explorer_selected_count">Đã chọn %1$d mục</string>
+    <string name="explorer_clipboard_copying">Đang sao chép %1$d mục</string>
+    <string name="explorer_clipboard_moving">Đang di chuyển %1$d mục</string>
+    <string name="explorer_action_ok">Đồng ý</string>
+    <string name="explorer_action_cancel">Hủy bỏ</string>
+    <string name="explorer_view_list">Danh sách</string>
+    <string name="explorer_view_grid">Lưới</string>
+    <string name="explorer_no_app_to_open">Không tìm thấy ứng dụng phù hợp để mở tệp này</string>
 </resources>

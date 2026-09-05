@@ -15,4 +15,9 @@ val storageModule = module {
 
     factory { GetStorageVolumesUseCase(get()) }
     factory { GetDirectoryContentsUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CreateFolderUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.RenameFileUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.DeleteFilesUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CopyFilesUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.MoveFilesUseCase(get()) }
 }
