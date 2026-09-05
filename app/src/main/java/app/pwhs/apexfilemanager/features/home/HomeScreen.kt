@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Dns
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Wifi
 import app.pwhs.apexfilemanager.features.home.components.QuickAccessCard
@@ -62,6 +63,7 @@ fun HomeScreen(
     onNavigateToApps: () -> Unit,
     onNavigateToWifiShare: () -> Unit,
     onNavigateToNetwork: () -> Unit,
+    onNavigateToVault: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -96,6 +98,9 @@ fun HomeScreen(
                 }
                 is HomeUiEvent.NavigateToNetwork -> {
                     onNavigateToNetwork()
+                }
+                is HomeUiEvent.NavigateToVault -> {
+                    onNavigateToVault()
                 }
             }
         }
@@ -255,6 +260,15 @@ fun HomeContent(
                                 title = stringResource(R.string.home_network_title),
                                 description = stringResource(R.string.home_network_desc),
                                 onClick = { onAction(HomeUiAction.NetworkClick) }
+                            )
+                        }
+
+                        item {
+                            QuickAccessCard(
+                                icon = Icons.Default.Lock,
+                                title = stringResource(R.string.home_vault_title),
+                                description = stringResource(R.string.home_vault_desc),
+                                onClick = { onAction(HomeUiAction.VaultClick) }
                             )
                         }
                     }

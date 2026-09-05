@@ -62,4 +62,17 @@ val storageModule = module {
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.TestNetworkConnectionUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.ListRemoteFilesUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.DownloadRemoteFileUseCase(get()) }
+
+    single<app.pwhs.apexfilemanager.core.storage.domain.repository.VaultRepository> {
+        app.pwhs.apexfilemanager.core.storage.data.repository.VaultRepositoryImpl(androidContext())
+    }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CheckVaultSetupUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.AuthenticateVaultUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.SetVaultPinUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetVaultItemsUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.ImportToVaultUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.ExportFromVaultUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.DeleteVaultItemUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetVaultDecryptedFileUseCase(get()) }
 }
+

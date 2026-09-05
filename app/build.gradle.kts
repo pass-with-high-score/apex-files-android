@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":features:appmanager"))
     implementation(project(":features:wifishare"))
     implementation(project(":features:network"))
+    implementation(project(":features:vault"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

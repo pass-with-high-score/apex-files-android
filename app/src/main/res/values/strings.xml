@@ -23,4 +23,6 @@
     <string name="home_wifishare_desc">Truy cập và chuyển tệp không dây qua trình duyệt web</string>
     <string name="home_network_title">Lưu trữ mạng (NAS)</string>
     <string name="home_network_desc">Kết nối máy chủ SMB, FTP, SFTP từ xa</string>
+    <string name="home_vault_title">Kho riêng tư</string>
+    <string name="home_vault_desc">Mã hóa bảo vệ tệp bằng AES-256</string>
 </resources>

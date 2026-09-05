@@ -52,6 +52,9 @@ class HomeViewModel(
             is HomeUiAction.NetworkClick -> {
                 sendEvent(HomeUiEvent.NavigateToNetwork)
             }
+            is HomeUiAction.VaultClick -> {
+                sendEvent(HomeUiEvent.NavigateToVault)
+            }
             is HomeUiAction.VolumeClick -> {
                 sendEvent(HomeUiEvent.NavigateToExplorer(action.volume.path))
             }

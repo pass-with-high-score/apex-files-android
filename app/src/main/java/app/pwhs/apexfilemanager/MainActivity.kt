@@ -44,6 +44,9 @@ class MainActivity : BaseActivity() {
                     },
                     onNavigateToNetwork = {
                         startActivity(app.pwhs.apexfilemanager.features.network.list.NetworkServerActivity.createIntent(this))
+                    },
+                    onNavigateToVault = {
+                        startActivity(Intent(this, app.pwhs.apexfilemanager.features.vault.auth.VaultAuthActivity::class.java))
                     }
                 )
             }

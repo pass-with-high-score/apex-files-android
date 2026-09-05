@@ -10,6 +10,7 @@ import app.pwhs.apexfilemanager.features.explorer.di.explorerModule
 import app.pwhs.apexfilemanager.features.recents.di.recentsModule
 import app.pwhs.apexfilemanager.features.search.di.searchModule
 import app.pwhs.apexfilemanager.features.network.di.networkModule
+import app.pwhs.apexfilemanager.features.vault.di.vaultModule
 import app.pwhs.apexfilemanager.features.viewer.di.viewerModule
 import app.pwhs.apexfilemanager.features.wifishare.di.wifiShareModule
 import org.koin.android.ext.koin.androidContext
@@ -36,7 +37,8 @@ class ApexApplication : Application() {
                 cleanerModule,
                 appManagerModule,
                 wifiShareModule,
-                networkModule
+                networkModule,
+                vaultModule
             )
         }
     }

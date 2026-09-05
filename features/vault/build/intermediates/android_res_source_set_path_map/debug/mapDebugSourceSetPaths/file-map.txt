@@ -1,0 +1,9 @@
+app.pwhs.apexfilemanager.features.vault-pngs-0 /Users/nqmgaming/AndroidStudioProjects/ApexFileManager/features/vault/build/generated/res/pngs/debug
+app.pwhs.apexfilemanager.features.vault-updated_navigation_xml-1 /Users/nqmgaming/AndroidStudioProjects/ApexFileManager/features/vault/build/generated/updated_navigation_xml/debug
+app.pwhs.apexfilemanager.features.vault-mergeDebugResources-2 /Users/nqmgaming/AndroidStudioProjects/ApexFileManager/features/vault/build/intermediates/incremental/debug/mergeDebugResources/merged.dir
+app.pwhs.apexfilemanager.features.vault-mergeDebugResources-3 /Users/nqmgaming/AndroidStudioProjects/ApexFileManager/features/vault/build/intermediates/incremental/debug/mergeDebugResources/stripped.dir
+app.pwhs.apexfilemanager.features.vault-debug-4 /Users/nqmgaming/AndroidStudioProjects/ApexFileManager/features/vault/build/intermediates/merged_res/debug/mergeDebugResources
+app.pwhs.apexfilemanager.features.vault-debug-5 /Users/nqmgaming/AndroidStudioProjects/ApexFileManager/features/vault/build/intermediates/packaged_res/debug/packageDebugResources
+app.pwhs.apexfilemanager.features.vault-debug-6 /Users/nqmgaming/AndroidStudioProjects/ApexFileManager/features/vault/src/debug/res
+app.pwhs.apexfilemanager.features.vault-main-7 /Users/nqmgaming/AndroidStudioProjects/ApexFileManager/features/vault/src/main/res
+gradleHome-0 /Users/nqmgaming/.gradle
