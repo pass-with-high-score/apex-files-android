@@ -68,6 +68,11 @@
             android:theme="@style/Theme.ApexFileManager" />
 
         <activity
+            android:name="app.pwhs.apexfilemanager.features.viewer.hex.HexViewerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ApexFileManager" />
+
+        <activity
             android:name="app.pwhs.apexfilemanager.features.cleaner.trash.TrashActivity"
             android:exported="false"
             android:theme="@style/Theme.ApexFileManager" />

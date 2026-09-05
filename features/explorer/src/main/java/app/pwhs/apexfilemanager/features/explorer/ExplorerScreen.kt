@@ -2,37 +2,45 @@ package app.pwhs.apexfilemanager.features.explorer
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.automirrored.filled.ViewList
-import androidx.compose.material.icons.filled.CreateNewFolder
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DashboardCustomize
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.ViewColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,12 +55,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.pwhs.apexfilemanager.core.storage.domain.model.FileItem
+import app.pwhs.apexfilemanager.features.explorer.components.BatchRenameDialog
 import app.pwhs.apexfilemanager.features.explorer.components.BreadcrumbBar
+import app.pwhs.apexfilemanager.features.explorer.components.ChecksumDialog
 import app.pwhs.apexfilemanager.features.explorer.components.ClipboardBottomBar
 import app.pwhs.apexfilemanager.features.explorer.components.ConfirmDeleteDialog
 import app.pwhs.apexfilemanager.features.explorer.components.CreateFolderDialog
-import app.pwhs.apexfilemanager.features.explorer.components.FileGridItem
-import app.pwhs.apexfilemanager.features.explorer.components.FileListItem
+import app.pwhs.apexfilemanager.features.explorer.components.ExplorerPanesContent
+import app.pwhs.apexfilemanager.features.explorer.components.PaneFileList
 import app.pwhs.apexfilemanager.features.explorer.components.RenameDialog
 import app.pwhs.apexfilemanager.features.explorer.components.SelectionBottomBar
 import app.pwhs.apexfilemanager.features.explorer.model.SortOption
@@ -61,6 +71,7 @@ import app.pwhs.apexfilemanager.features.explorer.model.ViewMode
 @Composable
 fun ExplorerScreen(
     viewModel: ExplorerViewModel,
+    initialPath: String = "",
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -121,17 +132,25 @@ fun ExplorerScreen(
                         Toast.makeText(context, "Không thể mở trình xem ảnh", Toast.LENGTH_SHORT).show()
                     }
                 }
+                is ExplorerUiEvent.OpenHexViewer -> {
+                    try {
+                        val clazz = Class.forName("app.pwhs.apexfilemanager.features.viewer.hex.HexViewerActivity")
+                        val intent = android.content.Intent(context, clazz).apply {
+                            putExtra("extra_file_path", event.path)
+                        }
+                        context.startActivity(intent)
+                    } catch (_: Exception) {
+                        Toast.makeText(context, "Không thể mở Trình xem Hex", Toast.LENGTH_SHORT).show()
+                    }
+                }
                 is ExplorerUiEvent.ShowToast -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
-                is ExplorerUiEvent.NavigateBack -> {
-                    onBackClick()
-                }
+                is ExplorerUiEvent.NavigateBack -> onBackClick()
                 is ExplorerUiEvent.NavigateToSearch -> {
                     try {
                         val clazz = Class.forName("app.pwhs.apexfilemanager.features.search.SearchActivity")
-                        val intent = android.content.Intent(context, clazz)
-                        context.startActivity(intent)
+                        context.startActivity(android.content.Intent(context, clazz))
                     } catch (_: Exception) {
                         Toast.makeText(context, "Search not available", Toast.LENGTH_SHORT).show()
                     }
@@ -140,9 +159,17 @@ fun ExplorerScreen(
         }
     }
 
+    LaunchedEffect(initialPath) {
+        if (state.currentPath.isEmpty()) {
+            viewModel.onAction(ExplorerUiAction.LoadDirectory(initialPath))
+        }
+    }
+
     ExplorerContent(
         state = state,
         onAction = viewModel::onAction,
+        onBackClick = onBackClick,
+        batchRenamePreview = viewModel.batchRenameUseCase::generatePreview,
         modifier = modifier
     )
 }
@@ -152,11 +179,14 @@ fun ExplorerScreen(
 fun ExplorerContent(
     state: ExplorerUiState,
     onAction: (ExplorerUiAction) -> Unit,
+    onBackClick: () -> Unit,
+    batchRenamePreview: (List<String>, app.pwhs.apexfilemanager.core.storage.domain.usecase.BatchRenameRule) -> List<app.pwhs.apexfilemanager.core.storage.domain.usecase.RenamePreviewItem>,
     modifier: Modifier = Modifier
 ) {
-    var showSortMenu by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
+    var showSortDialog by remember { mutableStateOf(false) }
     var showCreateFolderDialog by remember { mutableStateOf(false) }
-    var itemToRename by remember { mutableStateOf<FileItem?>(null) }
+    var showRenameDialog by remember { mutableStateOf<FileItem?>(null) }
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -165,29 +195,32 @@ fun ExplorerContent(
                 title = {
                     Text(
                         text = stringResource(R.string.explorer_title),
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onAction(ExplorerUiAction.NavigateUp) }) {
+                    IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null
+                            contentDescription = stringResource(R.string.explorer_cancel)
                         )
                     }
                 },
                 actions = {
+                    // Dual Pane toggle button
+                    IconButton(onClick = { onAction(ExplorerUiAction.ToggleDualPane) }) {
+                        Icon(
+                            imageVector = if (state.isDualPaneMode) Icons.Default.DashboardCustomize else Icons.Default.ViewColumn,
+                            contentDescription = stringResource(if (state.isDualPaneMode) R.string.explorer_single_pane else R.string.explorer_dual_pane),
+                            tint = if (state.isDualPaneMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+
                     IconButton(onClick = { onAction(ExplorerUiAction.SearchClick) }) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = stringResource(R.string.explorer_search)
-                        )
-                    }
-
-                    IconButton(onClick = { showCreateFolderDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Default.CreateNewFolder,
-                            contentDescription = stringResource(R.string.explorer_create_folder)
                         )
                     }
 
@@ -201,163 +234,119 @@ fun ExplorerContent(
                         )
                     }
 
-                    IconButton(onClick = { onAction(ExplorerUiAction.ToggleHiddenFiles) }) {
-                        Icon(
-                            imageVector = if (state.showHiddenFiles) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = stringResource(R.string.explorer_hidden_files)
-                        )
-                    }
-
-                    IconButton(onClick = { showSortMenu = true }) {
+                    IconButton(onClick = { showSortDialog = true }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.Sort,
                             contentDescription = stringResource(R.string.explorer_sort)
                         )
                     }
 
+                    IconButton(onClick = { showMenu = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = null
+                        )
+                    }
+
                     DropdownMenu(
-                        expanded = showSortMenu,
-                        onDismissRequest = { showSortMenu = false }
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.explorer_sort_name_asc)) },
+                            text = {
+                                Text(
+                                    if (state.showHiddenFiles) "Ẩn tệp ẩn" else "Hiện tệp ẩn"
+                                )
+                            },
                             onClick = {
-                                onAction(ExplorerUiAction.ChangeSort(SortOption.NAME_ASC))
-                                showSortMenu = false
+                                showMenu = false
+                                onAction(ExplorerUiAction.ToggleHiddenFiles)
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.explorer_sort_name_desc)) },
+                            text = { Text("Làm mới") },
                             onClick = {
-                                onAction(ExplorerUiAction.ChangeSort(SortOption.NAME_DESC))
-                                showSortMenu = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.explorer_sort_date_desc)) },
-                            onClick = {
-                                onAction(ExplorerUiAction.ChangeSort(SortOption.DATE_DESC))
-                                showSortMenu = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.explorer_sort_date_asc)) },
-                            onClick = {
-                                onAction(ExplorerUiAction.ChangeSort(SortOption.DATE_ASC))
-                                showSortMenu = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.explorer_sort_size_desc)) },
-                            onClick = {
-                                onAction(ExplorerUiAction.ChangeSort(SortOption.SIZE_DESC))
-                                showSortMenu = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.explorer_sort_size_asc)) },
-                            onClick = {
-                                onAction(ExplorerUiAction.ChangeSort(SortOption.SIZE_ASC))
-                                showSortMenu = false
+                                showMenu = false
+                                onAction(ExplorerUiAction.Refresh)
                             }
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
         },
+        floatingActionButton = {
+            if (!state.isSelectionMode) {
+                FloatingActionButton(
+                    onClick = { showCreateFolderDialog = true },
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(R.string.explorer_create_folder)
+                    )
+                }
+            }
+        },
         bottomBar = {
-            when {
-                state.isSelectionMode -> {
+            Column {
+                AnimatedVisibility(visible = state.isSelectionMode) {
                     SelectionBottomBar(
-                        selectedCount = state.selectedItems.size,
+                        selectedCount = state.currentActiveSelectedItems.size,
+                        isDualPane = state.isDualPaneMode,
                         onSelectAll = { onAction(ExplorerUiAction.SelectAll) },
                         onCopy = { onAction(ExplorerUiAction.CopySelected) },
                         onMove = { onAction(ExplorerUiAction.MoveSelected) },
-                        onRename = { itemToRename = state.selectedItems.firstOrNull() },
+                        onRename = {
+                            val item = state.currentActiveSelectedItems.firstOrNull()
+                            if (item != null) showRenameDialog = item
+                        },
+                        onBatchRename = { onAction(ExplorerUiAction.OpenBatchRenameDialog) },
+                        onCopyToOpposite = { onAction(ExplorerUiAction.CopyToOppositePane) },
+                        onMoveToOpposite = { onAction(ExplorerUiAction.MoveToOppositePane) },
+                        onChecksum = {
+                            val item = state.currentActiveSelectedItems.firstOrNull()
+                            if (item != null) onAction(ExplorerUiAction.OpenChecksumDialog(item))
+                        },
+                        onHexViewer = {
+                            val item = state.currentActiveSelectedItems.firstOrNull()
+                            if (item != null) onAction(ExplorerUiAction.OpenHexViewerAction(item))
+                        },
+                        onTextEditor = {
+                            val item = state.currentActiveSelectedItems.firstOrNull()
+                            if (item != null) onAction(ExplorerUiAction.OpenTextEditorAction(item))
+                        },
                         onDelete = { showDeleteConfirmDialog = true },
                         onClear = { onAction(ExplorerUiAction.ClearSelection) }
                     )
                 }
-                state.clipboard != null -> {
-                    ClipboardBottomBar(
-                        clipboard = state.clipboard,
-                        onPaste = { onAction(ExplorerUiAction.PasteClipboard) },
-                        onCancel = { onAction(ExplorerUiAction.CancelClipboard) }
-                    )
+
+                AnimatedVisibility(visible = state.clipboard != null && !state.isSelectionMode) {
+                    state.clipboard?.let { clip ->
+                        ClipboardBottomBar(
+                            clipboard = clip,
+                            onPaste = { onAction(ExplorerUiAction.PasteClipboard) },
+                            onCancel = { onAction(ExplorerUiAction.CancelClipboard) }
+                        )
+                    }
                 }
             }
         },
         modifier = modifier
-    ) { innerPadding ->
-        Column(
+    ) { paddingValues ->
+        ExplorerPanesContent(
+            state = state,
+            onAction = onAction,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            if (state.breadcrumbs.isNotEmpty()) {
-                BreadcrumbBar(
-                    breadcrumbs = state.breadcrumbs,
-                    onSegmentClick = { path -> onAction(ExplorerUiAction.BreadcrumbClick(path)) }
-                )
-            }
-
-            Box(modifier = Modifier.fillMaxSize()) {
-                when {
-                    state.isLoading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center),
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    state.files.isEmpty() -> {
-                        Text(
-                            text = stringResource(R.string.explorer_empty_folder),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
-                    state.viewMode == ViewMode.GRID -> {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(3),
-                            contentPadding = PaddingValues(12.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            items(state.files, key = { it.id }) { item ->
-                                FileGridItem(
-                                    item = item,
-                                    isSelected = state.selectedItems.contains(item),
-                                    isSelectionMode = state.isSelectionMode,
-                                    onClick = { onAction(ExplorerUiAction.FileClick(item)) },
-                                    onLongClick = { onAction(ExplorerUiAction.ToggleSelect(item)) }
-                                )
-                            }
-                        }
-                    }
-                    else -> {
-                        LazyColumn(modifier = Modifier.fillMaxSize()) {
-                            items(state.files, key = { it.id }) { item ->
-                                FileListItem(
-                                    item = item,
-                                    isSelected = state.selectedItems.contains(item),
-                                    isSelectionMode = state.isSelectionMode,
-                                    onClick = { onAction(ExplorerUiAction.FileClick(item)) },
-                                    onLongClick = { onAction(ExplorerUiAction.ToggleSelect(item)) }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
+                .padding(paddingValues)
+        )
     }
 
+    // Dialogs
     if (showCreateFolderDialog) {
         CreateFolderDialog(
             onDismiss = { showCreateFolderDialog = false },
@@ -368,12 +357,12 @@ fun ExplorerContent(
         )
     }
 
-    itemToRename?.let { item ->
+    showRenameDialog?.let { item ->
         RenameDialog(
             currentName = item.name,
-            onDismiss = { itemToRename = null },
+            onDismiss = { showRenameDialog = null },
             onConfirm = { newName ->
-                itemToRename = null
+                showRenameDialog = null
                 onAction(ExplorerUiAction.Rename(item, newName))
             }
         )
@@ -381,12 +370,33 @@ fun ExplorerContent(
 
     if (showDeleteConfirmDialog) {
         ConfirmDeleteDialog(
-            itemCount = state.selectedItems.size,
+            itemCount = state.currentActiveSelectedItems.size,
             onDismiss = { showDeleteConfirmDialog = false },
             onConfirm = {
                 showDeleteConfirmDialog = false
                 onAction(ExplorerUiAction.DeleteSelected)
             }
+        )
+    }
+
+    // Batch Rename Dialog
+    if (state.showBatchRenameDialog) {
+        val selectedPaths = state.currentActiveSelectedItems.map { it.path }
+        BatchRenameDialog(
+            selectedPaths = selectedPaths,
+            onGeneratePreview = batchRenamePreview,
+            onApplyRename = { items -> onAction(ExplorerUiAction.ApplyBatchRename(items)) },
+            onDismiss = { onAction(ExplorerUiAction.DismissBatchRenameDialog) }
+        )
+    }
+
+    // Checksum Dialog
+    if (state.showChecksumDialog) {
+        ChecksumDialog(
+            fileName = state.checksumTargetItem?.name ?: "",
+            checksumResult = state.checksumResult,
+            isLoading = state.isCalculatingChecksum,
+            onDismiss = { onAction(ExplorerUiAction.DismissChecksumDialog) }
         )
     }
 }

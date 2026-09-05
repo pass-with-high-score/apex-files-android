@@ -21,4 +21,11 @@
     <string name="viewer_read_only">Chỉ đọc</string>
     <string name="viewer_modified">Đã sửa</string>
     <string name="viewer_close">Đóng</string>
+    <string name="viewer_hex_title">Trình xem Hex</string>
+    <string name="viewer_hex_offset">Vị trí (Offset)</string>
+    <string name="viewer_hex_bytes">Mã Hex</string>
+    <string name="viewer_hex_ascii">Ký tự ASCII</string>
+    <string name="viewer_hex_file_size">Kích thước: %1$s</string>
+    <string name="viewer_hex_copy_row">Đã sao chép dòng hex</string>
+    <string name="viewer_hex_empty">Tệp rỗng (0 bytes)</string>
 </resources>

@@ -75,11 +75,9 @@ fun FileListItem(
             )
         }
 
-        Icon(
-            imageVector = if (item.isDirectory) Icons.Default.Folder else Icons.AutoMirrored.Filled.InsertDriveFile,
-            contentDescription = null,
-            tint = if (item.isDirectory) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(36.dp)
+        FileThumbnail(
+            item = item,
+            size = 42.dp
         )
 
         Spacer(modifier = Modifier.width(14.dp))

@@ -8,16 +8,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.SelectAll
+import androidx.compose.material.icons.filled.Spellcheck
+import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,10 +41,17 @@ import app.pwhs.apexfilemanager.features.explorer.R
 @Composable
 fun SelectionBottomBar(
     selectedCount: Int,
+    isDualPane: Boolean = false,
     onSelectAll: () -> Unit,
     onCopy: () -> Unit,
     onMove: () -> Unit,
     onRename: () -> Unit,
+    onBatchRename: () -> Unit,
+    onCopyToOpposite: () -> Unit = {},
+    onMoveToOpposite: () -> Unit = {},
+    onChecksum: () -> Unit = {},
+    onHexViewer: () -> Unit = {},
+    onTextEditor: () -> Unit = {},
     onDelete: () -> Unit,
     onClear: () -> Unit,
     modifier: Modifier = Modifier
@@ -97,6 +108,7 @@ fun SelectionBottomBar(
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
+
                 IconButton(onClick = onMove) {
                     Icon(
                         imageVector = Icons.Default.ContentCut,
@@ -104,16 +116,56 @@ fun SelectionBottomBar(
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
-                IconButton(
-                    onClick = onRename,
-                    enabled = selectedCount == 1
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.DriveFileRenameOutline,
-                        contentDescription = stringResource(R.string.explorer_rename),
-                        tint = if (selectedCount == 1) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outline
-                    )
+
+                if (isDualPane) {
+                    IconButton(onClick = onCopyToOpposite) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.CompareArrows,
+                            contentDescription = stringResource(R.string.explorer_copy_to_opposite),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
+
+                if (selectedCount == 1) {
+                    IconButton(onClick = onRename) {
+                        Icon(
+                            imageVector = Icons.Default.DriveFileRenameOutline,
+                            contentDescription = stringResource(R.string.explorer_rename),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    IconButton(onClick = onChecksum) {
+                        Icon(
+                            imageVector = Icons.Default.Numbers,
+                            contentDescription = stringResource(R.string.explorer_checksum_title),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    IconButton(onClick = onTextEditor) {
+                        Icon(
+                            imageVector = Icons.Default.EditNote,
+                            contentDescription = stringResource(R.string.explorer_open_text_editor),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    IconButton(onClick = onHexViewer) {
+                        Icon(
+                            imageVector = Icons.Default.Terminal,
+                            contentDescription = stringResource(R.string.explorer_open_hex_viewer),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                } else {
+                    IconButton(onClick = onBatchRename) {
+                        Icon(
+                            imageVector = Icons.Default.Spellcheck,
+                            contentDescription = stringResource(R.string.explorer_batch_rename),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+
                 IconButton(onClick = onDelete) {
                     Icon(
                         imageVector = Icons.Default.Delete,

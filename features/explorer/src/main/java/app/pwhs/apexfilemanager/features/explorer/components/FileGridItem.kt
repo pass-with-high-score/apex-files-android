@@ -94,11 +94,9 @@ fun FileGridItem(
                     .padding(top = 8.dp, bottom = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    imageVector = if (item.isDirectory) Icons.Default.Folder else Icons.AutoMirrored.Filled.InsertDriveFile,
-                    contentDescription = null,
-                    tint = if (item.isDirectory) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(44.dp)
+                FileThumbnail(
+                    item = item,
+                    size = 56.dp
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

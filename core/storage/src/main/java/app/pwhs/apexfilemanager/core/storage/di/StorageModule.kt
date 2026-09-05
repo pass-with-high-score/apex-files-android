@@ -74,5 +74,8 @@ val storageModule = module {
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.ExportFromVaultUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.DeleteVaultItemUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetVaultDecryptedFileUseCase(get()) }
+
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CalculateChecksumUseCase() }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.BatchRenameUseCase(get()) }
 }
 

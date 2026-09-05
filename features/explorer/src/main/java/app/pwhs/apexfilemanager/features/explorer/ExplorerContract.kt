@@ -4,6 +4,8 @@ import app.pwhs.apexfilemanager.core.base.UiAction
 import app.pwhs.apexfilemanager.core.base.UiEvent
 import app.pwhs.apexfilemanager.core.base.UiState
 import app.pwhs.apexfilemanager.core.storage.domain.model.FileItem
+import app.pwhs.apexfilemanager.core.storage.domain.usecase.ChecksumResult
+import app.pwhs.apexfilemanager.core.storage.domain.usecase.RenamePreviewItem
 import app.pwhs.apexfilemanager.features.explorer.model.PathSegment
 import app.pwhs.apexfilemanager.features.explorer.model.SortOption
 import app.pwhs.apexfilemanager.features.explorer.model.ViewMode
@@ -11,6 +13,11 @@ import app.pwhs.apexfilemanager.features.explorer.model.ViewMode
 enum class ClipboardOperation {
     COPY,
     MOVE
+}
+
+enum class ActivePane {
+    PRIMARY,
+    SECONDARY
 }
 
 data class ClipboardState(
@@ -28,10 +35,29 @@ data class ExplorerUiState(
     val errorMessage: String? = null,
     val viewMode: ViewMode = ViewMode.LIST,
     val sortOption: SortOption = SortOption.NAME_ASC,
-    val showHiddenFiles: Boolean = false
+    val showHiddenFiles: Boolean = false,
+
+    // Dual pane states
+    val isDualPaneMode: Boolean = false,
+    val activePane: ActivePane = ActivePane.PRIMARY,
+    val secondaryPath: String = "",
+    val secondaryBreadcrumbs: List<PathSegment> = emptyList(),
+    val secondaryFiles: List<FileItem> = emptyList(),
+    val secondarySelectedItems: Set<FileItem> = emptySet(),
+    val secondaryIsLoading: Boolean = false,
+
+    // Power user dialog states
+    val showBatchRenameDialog: Boolean = false,
+    val showChecksumDialog: Boolean = false,
+    val checksumTargetItem: FileItem? = null,
+    val checksumResult: ChecksumResult? = null,
+    val isCalculatingChecksum: Boolean = false
 ) : UiState {
     val isSelectionMode: Boolean
-        get() = selectedItems.isNotEmpty()
+        get() = (if (activePane == ActivePane.PRIMARY) selectedItems else secondarySelectedItems).isNotEmpty()
+
+    val currentActiveSelectedItems: Set<FileItem>
+        get() = if (activePane == ActivePane.PRIMARY) selectedItems else secondarySelectedItems
 }
 
 sealed interface ExplorerUiAction : UiAction {
@@ -59,6 +85,21 @@ sealed interface ExplorerUiAction : UiAction {
     data object MoveSelected : ExplorerUiAction
     data object PasteClipboard : ExplorerUiAction
     data object CancelClipboard : ExplorerUiAction
+
+    // Dual Pane
+    data object ToggleDualPane : ExplorerUiAction
+    data class SwitchActivePane(val pane: ActivePane) : ExplorerUiAction
+    data object CopyToOppositePane : ExplorerUiAction
+    data object MoveToOppositePane : ExplorerUiAction
+
+    // Power Tools
+    data object OpenBatchRenameDialog : ExplorerUiAction
+    data object DismissBatchRenameDialog : ExplorerUiAction
+    data class ApplyBatchRename(val items: List<RenamePreviewItem>) : ExplorerUiAction
+    data class OpenChecksumDialog(val item: FileItem) : ExplorerUiAction
+    data object DismissChecksumDialog : ExplorerUiAction
+    data class OpenHexViewerAction(val item: FileItem) : ExplorerUiAction
+    data class OpenTextEditorAction(val item: FileItem) : ExplorerUiAction
 }
 
 sealed interface ExplorerUiEvent : UiEvent {
@@ -67,6 +108,7 @@ sealed interface ExplorerUiEvent : UiEvent {
     data class OpenApkDetail(val path: String) : ExplorerUiEvent
     data class OpenTextEditor(val path: String) : ExplorerUiEvent
     data class OpenImageViewer(val path: String) : ExplorerUiEvent
+    data class OpenHexViewer(val path: String) : ExplorerUiEvent
     data class ShowToast(val message: String) : ExplorerUiEvent
     data object NavigateBack : ExplorerUiEvent
     data object NavigateToSearch : ExplorerUiEvent
