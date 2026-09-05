@@ -26,6 +26,9 @@ class MainActivity : BaseActivity() {
                     },
                     onNavigateToSearch = {
                         startActivity(SearchActivity.createIntent(this))
+                    },
+                    onNavigateToRecents = {
+                        startActivity(app.pwhs.apexfilemanager.features.recents.RecentsActivity.createIntent(this))
                     }
                 )
             }

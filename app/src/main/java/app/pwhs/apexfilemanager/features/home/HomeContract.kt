@@ -24,6 +24,7 @@ sealed interface HomeUiAction : UiAction {
     data object CheckPermission : HomeUiAction
     data object RequestPermissionClick : HomeUiAction
     data object SearchClick : HomeUiAction
+    data object RecentsClick : HomeUiAction
     data class VolumeClick(val volume: StorageVolume) : HomeUiAction
 }
 
@@ -34,4 +35,5 @@ sealed interface HomeUiEvent : UiEvent {
     data class RequestPermission(val intent: Intent) : HomeUiEvent
     data class NavigateToExplorer(val path: String) : HomeUiEvent
     data object NavigateToSearch : HomeUiEvent
+    data object NavigateToRecents : HomeUiEvent
 }

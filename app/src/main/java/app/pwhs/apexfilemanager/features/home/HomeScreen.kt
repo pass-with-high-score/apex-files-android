@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -48,6 +49,7 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onNavigateToExplorer: (String) -> Unit,
     onNavigateToSearch: () -> Unit,
+    onNavigateToRecents: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -64,6 +66,9 @@ fun HomeScreen(
                 }
                 is HomeUiEvent.NavigateToSearch -> {
                     onNavigateToSearch()
+                }
+                is HomeUiEvent.NavigateToRecents -> {
+                    onNavigateToRecents()
                 }
             }
         }
@@ -159,6 +164,55 @@ fun HomeContent(
                                     volume = volume,
                                     onClick = { onAction(HomeUiAction.VolumeClick(volume)) }
                                 )
+                            }
+                        }
+
+                        item {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = stringResource(R.string.home_quick_access),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+
+                        item {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onAction(HomeUiAction.RecentsClick) },
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                )
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.AccessTime,
+                                        contentDescription = stringResource(R.string.home_recents_title),
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.padding(end = 16.dp)
+                                    )
+                                    Column {
+                                        Text(
+                                            text = stringResource(R.string.home_recents_title),
+                                            style = MaterialTheme.typography.titleSmall,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Spacer(modifier = Modifier.height(2.dp))
+                                        Text(
+                                            text = stringResource(R.string.home_recents_desc),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

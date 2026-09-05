@@ -39,6 +39,16 @@
             android:exported="false"
             android:theme="@style/Theme.ApexFileManager" />
 
+        <activity
+            android:name="app.pwhs.apexfilemanager.features.archive.ArchiveActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ApexFileManager" />
+
+        <activity
+            android:name="app.pwhs.apexfilemanager.features.recents.RecentsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ApexFileManager" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

@@ -50,6 +50,32 @@ class FileRepositoryImpl : FileRepository {
         emit(items)
     }.flowOn(Dispatchers.IO)
 
+    override fun getRecentFiles(limit: Int): Flow<List<FileItem>> = flow {
+        val rootDir = android.os.Environment.getExternalStorageDirectory()
+        if (!rootDir.exists() || !rootDir.canRead()) {
+            emit(emptyList())
+            return@flow
+        }
+
+        val results = mutableListOf<FileItem>()
+        try {
+            rootDir.walkTopDown()
+                .onEnter { dir ->
+                    val abs = dir.absolutePath
+                    !abs.contains("/Android/data") && !abs.contains("/Android/obb")
+                }
+                .filter { it.isFile && !it.name.startsWith(".") }
+                .forEach { file ->
+                    results.add(mapToFileItem(file))
+                }
+        } catch (_: Exception) { }
+
+        val recent = results
+            .sortedByDescending { it.modifiedTimestamp }
+            .take(limit)
+        emit(recent)
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun createFolder(parentPath: String, folderName: String): Result<FileItem> = withContext(Dispatchers.IO) {
         runCatching {
             val newDir = File(parentPath, folderName)

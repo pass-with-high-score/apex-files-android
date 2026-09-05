@@ -63,6 +63,7 @@ sealed interface ExplorerUiAction : UiAction {
 
 sealed interface ExplorerUiEvent : UiEvent {
     data class OpenFileExternal(val path: String, val mimeType: String) : ExplorerUiEvent
+    data class OpenArchive(val path: String) : ExplorerUiEvent
     data class ShowToast(val message: String) : ExplorerUiEvent
     data object NavigateBack : ExplorerUiEvent
     data object NavigateToSearch : ExplorerUiEvent

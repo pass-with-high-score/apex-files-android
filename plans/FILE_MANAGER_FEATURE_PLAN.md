@@ -220,3 +220,14 @@ ApexFileManager giúp người dùng tìm đúng file nhanh, sắp xếp dễ d�
 
 `MANAGE_EXTERNAL_STORAGE` là quyền nhạy cảm. File manager có thể thuộc nhóm được phép sử dụng, nhưng phải khai báo và được Google Play xét duyệt. Quyền này cũng không đồng nghĩa với việc có thể sửa mọi thư mục riêng của ứng dụng khác. Cần ưu tiên Storage Access Framework và MediaStore khi phù hợp, đồng thời mô tả trung thực phạm vi quyền trong Play Store.
 
+## Đối chiếu MT Manager
+
+Phân tích APK MT Manager đang cài trên thiết bị (`bin.mt.plus`, phiên bản 2.26.8) cho thấy nhóm tính năng tạo khác biệt mạnh nhất là: hàng đợi tác vụ nền có pause/resume, recycle bin, hai cửa sổ, network storage đa giao thức (SMB/SFTP/WebDAV/FTP/FTPS/OSS), web/FTP server LAN, terminal, editor text/hex và bộ công cụ APK/Dex/ARSC. Báo cáo kỹ thuật nằm tại [android-re-workspace/analysis/bin.mt.plus/ANALYSIS.md](../android-re-workspace/analysis/bin.mt.plus/ANALYSIS.md).
+
+Các điều chỉnh cho ApexFileManager:
+
+- Đưa task queue, pause/resume, recycle bin và hai pane lên P0/P1 vì đây là lợi thế trải nghiệm có thể phục vụ người dùng phổ thông mà không cần root.
+- Giữ SMB, SFTP và WebDAV ở P2; thêm FTP/FTPS sau khi luồng kết nối, lưu credential mã hóa và retry đã ổn định.
+- Tách APK/Dex/ARSC editor, terminal root và Shizuku/Dhizuku thành module power-user riêng; không đưa các quyền đặc biệt vào onboarding mặc định.
+- Web server LAN nên có opt-in rõ ràng, tự hết hạn, mã QR và cảnh báo mạng hiện tại; không bật cleartext server âm thầm.
+- Preview/editor cần backup `.bak`, phát hiện file bị đổi/xóa và xử lý encoding; đây là các chi tiết MT làm tốt và có giá trị hơn việc thêm nhiều định dạng hiếm.

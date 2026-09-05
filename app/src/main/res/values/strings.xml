@@ -10,4 +10,7 @@
     <string name="home_permission_btn">Cấp quyền ngay</string>
     <string name="home_empty_storage">Không tìm thấy phân vùng lưu trữ nào</string>
     <string name="home_search">Tìm kiếm</string>
+    <string name="home_quick_access">Truy cập nhanh</string>
+    <string name="home_recents_title">Tệp gần đây</string>
+    <string name="home_recents_desc">Xem các tệp được mở hoặc sửa đổi gần đây</string>
 </resources>

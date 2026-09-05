@@ -9,6 +9,7 @@ activityCompose = "1.13.0"
 kotlin = "2.2.10"
 composeBom = "2026.02.01"
 koin = "4.0.2"
+zip4j = "2.11.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -30,6 +31,7 @@ androidx-compose-material-icons-extended = { group = "androidx.compose.material"
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+zip4j = { group = "net.lingala.zip4j", name = "zip4j", version.ref = "zip4j" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

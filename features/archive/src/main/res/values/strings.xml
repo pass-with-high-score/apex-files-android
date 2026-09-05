@@ -1,0 +1,17 @@
+<resources>
+    <string name="archive_title">Tệp nén</string>
+    <string name="archive_extract_all">Giải nén</string>
+    <string name="archive_extract_to">Giải nén vào…</string>
+    <string name="archive_extracting">Đang giải nén…</string>
+    <string name="archive_extract_success">Đã giải nén %1$d mục</string>
+    <string name="archive_empty">Tệp lưu trữ trống</string>
+    <string name="archive_items_count">%1$d mục</string>
+    <string name="archive_password_prompt">Nhập mật khẩu nếu tệp được bảo vệ</string>
+    <string name="archive_password">Mật khẩu</string>
+    <string name="archive_compress_title">Nén tệp tin</string>
+    <string name="archive_compress_name">Tên tệp nén</string>
+    <string name="archive_compressing">Đang nén tệp tin…</string>
+    <string name="archive_compress_success">Nén thành công: %1$s</string>
+    <string name="archive_action_ok">Đồng ý</string>
+    <string name="archive_action_cancel">Hủy bỏ</string>
+</resources>

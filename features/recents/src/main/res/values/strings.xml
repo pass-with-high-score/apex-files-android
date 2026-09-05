@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recents_title">Gần đây</string>
+    <string name="recents_empty">Chưa có tệp gần đây</string>
+</resources>

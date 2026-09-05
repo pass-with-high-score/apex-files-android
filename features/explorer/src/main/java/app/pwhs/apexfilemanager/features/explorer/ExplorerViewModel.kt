@@ -83,9 +83,16 @@ class ExplorerViewModel(
         }
         if (item.isDirectory) {
             loadDirectory(item.path)
+        } else if (isArchiveFile(item.name)) {
+            sendEvent(ExplorerUiEvent.OpenArchive(item.path))
         } else {
             sendEvent(ExplorerUiEvent.OpenFileExternal(item.path, item.mimeType))
         }
+    }
+
+    private fun isArchiveFile(name: String): Boolean {
+        val ext = name.substringAfterLast('.', "").lowercase()
+        return ext in setOf("zip", "rar", "7z", "tar", "gz", "bz2", "xz")
     }
 
     private fun toggleSelect(item: FileItem) {

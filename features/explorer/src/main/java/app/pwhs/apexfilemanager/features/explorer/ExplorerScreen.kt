@@ -77,6 +77,17 @@ fun ExplorerScreen(
                 is ExplorerUiEvent.OpenFileExternal -> {
                     openFileWithExternalApp(context, event.path, event.mimeType)
                 }
+                is ExplorerUiEvent.OpenArchive -> {
+                    try {
+                        val clazz = Class.forName("app.pwhs.apexfilemanager.features.archive.ArchiveActivity")
+                        val intent = android.content.Intent(context, clazz).apply {
+                            putExtra("extra_archive_path", event.path)
+                        }
+                        context.startActivity(intent)
+                    } catch (_: Exception) {
+                        Toast.makeText(context, "Không thể mở tệp nén", Toast.LENGTH_SHORT).show()
+                    }
+                }
                 is ExplorerUiEvent.ShowToast -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }

@@ -34,6 +34,9 @@ class HomeViewModel(
             is HomeUiAction.SearchClick -> {
                 sendEvent(HomeUiEvent.NavigateToSearch)
             }
+            is HomeUiAction.RecentsClick -> {
+                sendEvent(HomeUiEvent.NavigateToRecents)
+            }
             is HomeUiAction.VolumeClick -> {
                 sendEvent(HomeUiEvent.NavigateToExplorer(action.volume.path))
             }

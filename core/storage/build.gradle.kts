@@ -32,6 +32,7 @@ dependencies {
     implementation(project(":core:base"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.koin.android)
+    implementation(libs.zip4j)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

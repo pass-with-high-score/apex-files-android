@@ -12,6 +12,9 @@ import org.koin.dsl.module
 val storageModule = module {
     single<StorageRepository> { StorageRepositoryImpl(androidContext()) }
     single<FileRepository> { FileRepositoryImpl() }
+    single<app.pwhs.apexfilemanager.core.storage.domain.repository.ArchiveRepository> {
+        app.pwhs.apexfilemanager.core.storage.data.repository.ArchiveRepositoryImpl()
+    }
 
     factory { GetStorageVolumesUseCase(get()) }
     factory { GetDirectoryContentsUseCase(get()) }
@@ -21,4 +24,8 @@ val storageModule = module {
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CopyFilesUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.MoveFilesUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.SearchFilesUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.ListArchiveEntriesUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.ExtractArchiveUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CreateArchiveUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetRecentFilesUseCase(get()) }
 }
