@@ -14,4 +14,10 @@ interface FileRepository {
     suspend fun deleteFiles(filePaths: List<String>): Result<Int>
     suspend fun copyFiles(sources: List<String>, targetDir: String, strategy: ConflictStrategy): Result<Int>
     suspend fun moveFiles(sources: List<String>, targetDir: String, strategy: ConflictStrategy): Result<Int>
+    fun searchFiles(
+        rootPath: String,
+        query: String,
+        category: app.pwhs.apexfilemanager.core.storage.domain.model.SearchCategory = app.pwhs.apexfilemanager.core.storage.domain.model.SearchCategory.ALL,
+        showHidden: Boolean = false
+    ): Flow<List<FileItem>>
 }

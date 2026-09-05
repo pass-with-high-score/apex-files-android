@@ -32,4 +32,5 @@
     <string name="explorer_view_list">Danh sách</string>
     <string name="explorer_view_grid">Lưới</string>
     <string name="explorer_no_app_to_open">Không tìm thấy ứng dụng phù hợp để mở tệp này</string>
+    <string name="explorer_search">Tìm kiếm</string>
 </resources>

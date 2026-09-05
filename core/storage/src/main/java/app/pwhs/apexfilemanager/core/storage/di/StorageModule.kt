@@ -20,4 +20,5 @@ val storageModule = module {
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.DeleteFilesUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CopyFilesUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.MoveFilesUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.SearchFilesUseCase(get()) }
 }

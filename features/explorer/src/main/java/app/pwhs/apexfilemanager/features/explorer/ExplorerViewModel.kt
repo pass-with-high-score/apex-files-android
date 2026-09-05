@@ -43,6 +43,7 @@ class ExplorerViewModel(
             }
             is ExplorerUiAction.Refresh -> loadDirectory(currentState.currentPath)
             is ExplorerUiAction.NavigateUp -> handleNavigateUp()
+            is ExplorerUiAction.SearchClick -> sendEvent(ExplorerUiEvent.NavigateToSearch)
 
             // Selection
             is ExplorerUiAction.ToggleSelect -> toggleSelect(action.item)

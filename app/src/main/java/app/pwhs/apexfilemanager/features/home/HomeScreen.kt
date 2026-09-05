@@ -13,11 +13,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -43,6 +47,7 @@ import app.pwhs.apexfilemanager.core.storage.domain.model.StorageVolume
 fun HomeScreen(
     viewModel: HomeViewModel,
     onNavigateToExplorer: (String) -> Unit,
+    onNavigateToSearch: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -56,6 +61,9 @@ fun HomeScreen(
                 }
                 is HomeUiEvent.NavigateToExplorer -> {
                     onNavigateToExplorer(event.path)
+                }
+                is HomeUiEvent.NavigateToSearch -> {
+                    onNavigateToSearch()
                 }
             }
         }
@@ -83,6 +91,14 @@ fun HomeContent(
                         text = stringResource(R.string.home_title),
                         fontWeight = FontWeight.Bold
                     )
+                },
+                actions = {
+                    IconButton(onClick = { onAction(HomeUiAction.SearchClick) }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(R.string.home_search)
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,

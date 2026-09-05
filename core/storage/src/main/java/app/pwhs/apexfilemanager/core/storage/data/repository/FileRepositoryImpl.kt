@@ -3,7 +3,9 @@ package app.pwhs.apexfilemanager.core.storage.data.repository
 import app.pwhs.apexfilemanager.core.storage.data.compat.StorageManagerCompat
 import app.pwhs.apexfilemanager.core.storage.domain.model.ConflictStrategy
 import app.pwhs.apexfilemanager.core.storage.domain.model.FileItem
+import app.pwhs.apexfilemanager.core.storage.domain.model.SearchCategory
 import app.pwhs.apexfilemanager.core.storage.domain.repository.FileRepository
+import app.pwhs.apexfilemanager.core.storage.util.VietnameseNormalizer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -39,25 +41,7 @@ class FileRepositoryImpl : FileRepository {
             .filter { file ->
                 if (showHidden) true else !file.name.startsWith(".")
             }
-            .map { file ->
-                val isDir = file.isDirectory
-                val mimeType = if (isDir) {
-                    "resource/folder"
-                } else {
-                    URLConnection.guessContentTypeFromName(file.name) ?: "*/*"
-                }
-
-                FileItem(
-                    id = file.absolutePath,
-                    name = file.name,
-                    path = file.absolutePath,
-                    sizeBytes = if (isDir) 0L else file.length(),
-                    isDirectory = isDir,
-                    mimeType = mimeType,
-                    modifiedTimestamp = file.lastModified(),
-                    isHidden = file.name.startsWith(".")
-                )
-            }
+            .map { file -> mapToFileItem(file) }
             .sortedWith(
                 compareByDescending<FileItem> { it.isDirectory }
                     .thenBy { it.name.lowercase() }
@@ -186,6 +170,63 @@ class FileRepositoryImpl : FileRepository {
         }
     }
 
+    override fun searchFiles(
+        rootPath: String,
+        query: String,
+        category: SearchCategory,
+        showHidden: Boolean
+    ): Flow<List<FileItem>> = flow {
+        val trimmedQuery = query.trim()
+        if (trimmedQuery.isEmpty()) {
+            emit(emptyList())
+            return@flow
+        }
+
+        val rootDir = File(rootPath)
+        if (!rootDir.exists() || !rootDir.canRead()) {
+            emit(emptyList())
+            return@flow
+        }
+
+        val results = mutableListOf<FileItem>()
+        var lastEmitTime = System.currentTimeMillis()
+
+        try {
+            rootDir.walkTopDown()
+                .onEnter { dir ->
+                    val name = dir.name
+                    if (!showHidden && name.startsWith(".")) return@onEnter false
+                    val abs = dir.absolutePath
+                    if (abs.contains("/Android/data") || abs.contains("/Android/obb")) return@onEnter false
+                    true
+                }
+                .forEach { file ->
+                    if (file.absolutePath == rootDir.absolutePath) return@forEach
+                    if (!showHidden && file.name.startsWith(".")) return@forEach
+
+                    val matchesQuery = app.pwhs.apexfilemanager.core.storage.util.VietnameseNormalizer
+                        .containsIgnoreCaseAndAccents(file.name, trimmedQuery)
+
+                    if (matchesQuery) {
+                        val ext = file.extension
+                        if (category.matches(ext)) {
+                            results.add(mapToFileItem(file))
+                            val now = System.currentTimeMillis()
+                            // Emit incremental results every 300ms or when reaching batch size to keep UI responsive
+                            if (results.size % 25 == 0 || (now - lastEmitTime) > 300) {
+                                emit(results.toList())
+                                lastEmitTime = now
+                            }
+                        }
+                    }
+                }
+        } catch (_: Exception) {
+            // Gracefully handle any permission or I/O interrupts
+        }
+
+        emit(results.toList())
+    }.flowOn(Dispatchers.IO)
+
     private fun resolveDestinationFile(targetFolder: File, originalName: String, strategy: ConflictStrategy): File? {
         val destFile = File(targetFolder, originalName)
         if (!destFile.exists()) {
@@ -207,5 +248,25 @@ class FileRepositoryImpl : FileRepository {
                 newFile
             }
         }
+    }
+
+    private fun mapToFileItem(file: File): FileItem {
+        val isDir = file.isDirectory
+        val mimeType = if (isDir) {
+            "resource/folder"
+        } else {
+            URLConnection.guessContentTypeFromName(file.name) ?: "*/*"
+        }
+
+        return FileItem(
+            id = file.absolutePath,
+            name = file.name,
+            path = file.absolutePath,
+            sizeBytes = if (isDir) 0L else file.length(),
+            isDirectory = isDir,
+            mimeType = mimeType,
+            modifiedTimestamp = file.lastModified(),
+            isHidden = file.name.startsWith(".")
+        )
     }
 }

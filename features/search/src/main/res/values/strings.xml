@@ -1,0 +1,16 @@
+<resources>
+    <string name="search_title">Tìm kiếm</string>
+    <string name="search_hint">Nhập tên tệp tin, thư mục…</string>
+    <string name="search_empty_hint">Nhập từ khóa để tìm kiếm tệp tin</string>
+    <string name="search_no_results">Không tìm thấy kết quả phù hợp</string>
+    <string name="search_searching">Đang tìm kiếm…</string>
+    <string name="search_filter_all">Tất cả</string>
+    <string name="search_filter_document">Tài liệu</string>
+    <string name="search_filter_image">Hình ảnh</string>
+    <string name="search_filter_video">Video</string>
+    <string name="search_filter_audio">Âm thanh</string>
+    <string name="search_filter_archive">Tệp nén</string>
+    <string name="search_filter_apk">Tệp APK</string>
+    <string name="search_results_count">Tìm thấy %1$d kết quả</string>
+    <string name="search_clear">Xóa từ khóa</string>
+</resources>

@@ -4,6 +4,7 @@ import android.app.Application
 import app.pwhs.apexfilemanager.core.storage.di.storageModule
 import app.pwhs.apexfilemanager.di.appModule
 import app.pwhs.apexfilemanager.features.explorer.di.explorerModule
+import app.pwhs.apexfilemanager.features.search.di.searchModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -20,7 +21,8 @@ class ApexApplication : Application() {
             modules(
                 storageModule,
                 appModule,
-                explorerModule
+                explorerModule,
+                searchModule
             )
         }
     }

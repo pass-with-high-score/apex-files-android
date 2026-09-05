@@ -21,3 +21,4 @@ local.properties
 .agents/skills/*
 !.agents/skills/create-module/
 .gemini/
+android-re-workspace/

@@ -43,6 +43,7 @@ sealed interface ExplorerUiAction : UiAction {
     data object ToggleHiddenFiles : ExplorerUiAction
     data object Refresh : ExplorerUiAction
     data object NavigateUp : ExplorerUiAction
+    data object SearchClick : ExplorerUiAction
 
     // Thao tác chọn nhiều
     data class ToggleSelect(val item: FileItem) : ExplorerUiAction
@@ -64,4 +65,5 @@ sealed interface ExplorerUiEvent : UiEvent {
     data class OpenFileExternal(val path: String, val mimeType: String) : ExplorerUiEvent
     data class ShowToast(val message: String) : ExplorerUiEvent
     data object NavigateBack : ExplorerUiEvent
+    data object NavigateToSearch : ExplorerUiEvent
 }

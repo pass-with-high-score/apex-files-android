@@ -31,6 +31,9 @@ class HomeViewModel(
                 val intent = StorageManagerCompat.createManageAllFilesIntent(context)
                 sendEvent(HomeUiEvent.RequestPermission(intent))
             }
+            is HomeUiAction.SearchClick -> {
+                sendEvent(HomeUiEvent.NavigateToSearch)
+            }
             is HomeUiAction.VolumeClick -> {
                 sendEvent(HomeUiEvent.NavigateToExplorer(action.volume.path))
             }

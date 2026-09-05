@@ -9,4 +9,5 @@
     <string name="home_permission_desc">Ứng dụng cần quyền quản lý tệp để hiển thị và thao tác với các tệp tin trên thiết bị của bạn.</string>
     <string name="home_permission_btn">Cấp quyền ngay</string>
     <string name="home_empty_storage">Không tìm thấy phân vùng lưu trữ nào</string>
+    <string name="home_search">Tìm kiếm</string>
 </resources>

@@ -19,6 +19,7 @@ import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.CreateNewFolder
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.CircularProgressIndicator
@@ -82,6 +83,15 @@ fun ExplorerScreen(
                 is ExplorerUiEvent.NavigateBack -> {
                     onBackClick()
                 }
+                is ExplorerUiEvent.NavigateToSearch -> {
+                    try {
+                        val clazz = Class.forName("app.pwhs.apexfilemanager.features.search.SearchActivity")
+                        val intent = android.content.Intent(context, clazz)
+                        context.startActivity(intent)
+                    } catch (_: Exception) {
+                        Toast.makeText(context, "Search not available", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
@@ -123,6 +133,13 @@ fun ExplorerContent(
                     }
                 },
                 actions = {
+                    IconButton(onClick = { onAction(ExplorerUiAction.SearchClick) }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(R.string.explorer_search)
+                        )
+                    }
+
                     IconButton(onClick = { showCreateFolderDialog = true }) {
                         Icon(
                             imageVector = Icons.Default.CreateNewFolder,
