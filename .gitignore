@@ -15,5 +15,6 @@ local.properties
 .kotlin/
 
 # Agent skills & local IDE configs
-.agents/
+.agents/*
+!.agents/rules/
 .gemini/
