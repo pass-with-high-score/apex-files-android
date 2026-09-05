@@ -11,6 +11,8 @@ composeBom = "2026.02.01"
 koin = "4.0.2"
 zip4j = "2.11.5"
 ackpine = "0.25.4"
+ktor = "2.3.12"
+zxing = "3.5.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,6 +38,10 @@ zip4j = { group = "net.lingala.zip4j", name = "zip4j", version.ref = "zip4j" }
 ackpine-core = { group = "ru.solrudev.ackpine", name = "ackpine-core", version.ref = "ackpine" }
 ackpine-ktx = { group = "ru.solrudev.ackpine", name = "ackpine-ktx", version.ref = "ackpine" }
 ackpine-splits = { group = "ru.solrudev.ackpine", name = "ackpine-splits", version.ref = "ackpine" }
+ktor-server-core = { group = "io.ktor", name = "ktor-server-core-jvm", version.ref = "ktor" }
+ktor-server-cio = { group = "io.ktor", name = "ktor-server-cio-jvm", version.ref = "ktor" }
+ktor-server-cors = { group = "io.ktor", name = "ktor-server-cors-jvm", version.ref = "ktor" }
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

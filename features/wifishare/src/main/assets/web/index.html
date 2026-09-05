@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex File Manager — Wi-Fi Share</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --surface-hover: #334155;
+            --primary-color: #38bdf8;
+            --primary-hover: #0284c7;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --card-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .brand svg {
+            width: 28px;
+            height: 28px;
+            fill: var(--primary-color);
+        }
+
+        .upload-btn {
+            background-color: var(--primary-color);
+            color: #0f172a;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .upload-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1100px;
+            width: 100%;
+            margin: 24px auto;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            background-color: var(--surface-color);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .crumb-item {
+            color: var(--primary-color);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .crumb-item:hover {
+            text-decoration: underline;
+        }
+
+        .crumb-sep {
+            color: var(--text-muted);
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 32px;
+            text-align: center;
+            background-color: rgba(30, 41, 59, 0.5);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .drop-zone.dragover {
+            border-color: var(--primary-color);
+            background-color: rgba(56, 189, 248, 0.1);
+        }
+
+        .drop-zone svg {
+            width: 48px;
+            height: 48px;
+            fill: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .table-container {
+            background-color: var(--surface-color);
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: rgba(15, 23, 42, 0.6);
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        tr:hover td {
+            background-color: var(--surface-hover);
+        }
+
+        .file-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .file-name:hover {
+            color: var(--primary-color);
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .icon.folder {
+            fill: #fbbf24;
+        }
+
+        .icon.file {
+            fill: var(--text-muted);
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(56, 189, 248, 0.15);
+        }
+
+        .empty-state {
+            padding: 48px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        #uploadProgress {
+            display: none;
+            margin-top: 12px;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border-color);
+            overflow: hidden;
+        }
+
+        #progressBar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary-color);
+            transition: width 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <svg viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+            Apex File Manager — Wi-Fi Share
+        </div>
+        <div>
+            <input type="file" id="fileInput" multiple style="display: none;" onchange="handleFilesUpload(this.files)">
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                <svg style="width:18px;height:18px;fill:currentColor" viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                Tải lên tệp
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="breadcrumbs" id="breadcrumbs">
+            <span class="crumb-item" onclick="loadDirectory('/')">Bộ nhớ chính</span>
+        </div>
+
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+            <p>Kéo và thả tệp vào đây để tải lên máy, hoặc nhấp để chọn tệp</p>
+            <div id="uploadProgress"><div id="progressBar"></div></div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tên tệp / thư mục</th>
+                        <th style="width: 120px;">Kích thước</th>
+                        <th style="width: 180px;">Thời gian</th>
+                        <th style="width: 100px; text-align: center;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="fileTableBody">
+                    <tr><td colspan="4" class="empty-state">Đang tải dữ liệu...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        let currentPath = "";
+
+        async function loadDirectory(path) {
+            try {
+                const response = await fetch('/api/files?path=' + encodeURIComponent(path));
+                if (!response.ok) throw new Error("Lỗi khi tải thư mục");
+                const data = await response.json();
+                currentPath = data.currentPath;
+                renderBreadcrumbs(data.currentPath);
+                renderFiles(data.items, data.parentPath);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('fileTableBody').innerHTML = '<tr><td colspan="4" class="empty-state">Không thể tải nội dung thư mục</td></tr>';
+            }
+        }
+
+        function renderBreadcrumbs(path) {
+            const container = document.getElementById('breadcrumbs');
+            container.innerHTML = '';
+            
+            const root = document.createElement('span');
+            root.className = 'crumb-item';
+            root.innerText = 'Bộ nhớ';
+            root.onclick = () => loadDirectory('/');
+            container.appendChild(root);
+
+            if (!path || path === '/') return;
+
+            const parts = path.split('/').filter(Boolean);
+            let accum = '';
+            parts.forEach((p, idx) => {
+                accum += '/' + p;
+                const target = accum;
+                const sep = document.createElement('span');
+                sep.className = 'crumb-sep';
+                sep.innerText = ' / ';
+                container.appendChild(sep);
+
+                const item = document.createElement('span');
+                item.className = 'crumb-item';
+                item.innerText = p;
+                item.onclick = () => loadDirectory(target);
+                container.appendChild(item);
+            });
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '-';
+            const d = new Date(timestamp);
+            return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function renderFiles(items, parentPath) {
+            const tbody = document.getElementById('fileTableBody');
+            tbody.innerHTML = '';
+
+            if (parentPath !== null) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="4">
+                        <div class="file-name" onclick="loadDirectory('${parentPath}')">
+                            <svg class="icon folder" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                            <b>.. (Thư mục cha)</b>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+
+            if (!items || items.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="4" class="empty-state">Thư mục trống</td>';
+                tbody.appendChild(row);
+                return;
+            }
+
+            items.forEach(item => {
+                const row = document.createElement('tr');
+                const isDir = item.isDirectory;
+                const iconSvg = isDir 
+                    ? '<svg class="icon folder" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>'
+                    : '<svg class="icon file" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>';
+
+                const clickAction = isDir 
+                    ? `loadDirectory('${item.path}')` 
+                    : `window.location.href='/api/download?path=' + encodeURIComponent('${item.path}')`;
+
+                const actionBtn = isDir 
+                    ? `<button class="action-btn" onclick="loadDirectory('${item.path}')">Mở</button>`
+                    : `<a class="action-btn" href="/api/download?path=${encodeURIComponent(item.path)}" download>Tải về</a>`;
+
+                row.innerHTML = `
+                    <td>
+                        <div class="file-name" onclick="${clickAction}">
+                            ${iconSvg}
+                            <span>${item.name}</span>
+                        </div>
+                    </td>
+                    <td>${isDir ? '-' : formatBytes(item.size)}</td>
+                    <td>${formatDate(item.lastModified)}</td>
+                    <td style="text-align: center;">${actionBtn}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function handleFilesUpload(files) {
+            if (!files || files.length === 0) return;
+            const progress = document.getElementById('uploadProgress');
+            const bar = document.getElementById('progressBar');
+            progress.style.display = 'block';
+            bar.style.width = '10%';
+
+            for (let i = 0; i < files.length; i++) {
+                const formData = new FormData();
+                formData.append('file', files[i]);
+                try {
+                    bar.style.width = `${Math.round(((i + 0.5) / files.length) * 100)}%`;
+                    await fetch('/api/upload?path=' + encodeURIComponent(currentPath), {
+                        method: 'POST',
+                        body: formData
+                    });
+                } catch (e) {
+                    console.error('Lỗi khi tải file:', e);
+                }
+            }
+
+            bar.style.width = '100%';
+            setTimeout(() => {
+                progress.style.display = 'none';
+                bar.style.width = '0%';
+                loadDirectory(currentPath);
+            }, 500);
+        }
+
+        const dropZone = document.getElementById('dropZone');
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFilesUpload(e.dataTransfer.files);
+        });
+
+        // Tải danh mục ban đầu
+        loadDirectory('/');
+    </script>
+</body>
+</html>

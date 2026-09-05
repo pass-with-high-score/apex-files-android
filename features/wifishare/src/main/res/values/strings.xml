@@ -1,0 +1,25 @@
+<resources>
+    <string name="wifishare_title">Chia sẻ Wi-Fi</string>
+    <string name="wifishare_server_status">Trạng thái máy chủ</string>
+    <string name="wifishare_server_running">Đang hoạt động</string>
+    <string name="wifishare_server_stopped">Chưa kích hoạt</string>
+    <string name="wifishare_start_server">Bật chia sẻ</string>
+    <string name="wifishare_stop_server">Dừng chia sẻ</string>
+    <string name="wifishare_wifi_network">Mạng Wi-Fi</string>
+    <string name="wifishare_no_wifi">Không có kết nối Wi-Fi</string>
+    <string name="wifishare_ip_address">Địa chỉ truy cập</string>
+    <string name="wifishare_port">Cổng (Port)</string>
+    <string name="wifishare_copy_url">Sao chép liên kết</string>
+    <string name="wifishare_url_copied">Đã sao chép liên kết</string>
+    <string name="wifishare_qr_title">Quét mã để kết nối</string>
+    <string name="wifishare_qr_desc">Mở trình duyệt web trên máy tính hoặc quét mã QR từ thiết bị khác trong cùng mạng Wi-Fi.</string>
+    <string name="wifishare_instruction_title">Hướng dẫn sử dụng</string>
+    <string name="wifishare_step_1">1. Đảm bảo thiết bị và máy tính kết nối chung mạng Wi-Fi.</string>
+    <string name="wifishare_step_2">2. Nhấn \'Bật chia sẻ\' để khởi chạy máy chủ cục bộ.</string>
+    <string name="wifishare_step_3">3. Mở trình duyệt web (Chrome, Edge, Safari...) trên máy tính và nhập địa chỉ bên trên.</string>
+    <string name="wifishare_step_4">4. Bạn có thể duyệt, tải xuống hoặc kéo thả tệp tải lên từ máy tính.</string>
+    <string name="wifishare_notification_title">Máy chủ tệp Wi-Fi đang chạy</string>
+    <string name="wifishare_notification_desc">Truy cập: %1$s</string>
+    <string name="wifishare_notification_stop">Dừng</string>
+    <string name="wifishare_error_start">Không thể khởi động máy chủ: %1$s</string>
+</resources>

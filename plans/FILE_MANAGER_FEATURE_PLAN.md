@@ -190,7 +190,7 @@ ApexFileManager giúp người dùng tìm đúng file nhanh, sắp xếp dễ d�
 7. Preview ảnh, video và văn bản
 8. Dọn dung lượng và thùng rác (Đã hoàn thành)
 9. APK manager (Đã hoàn thành — Tích hợp Ackpine)
-10. Chia sẻ Wi-Fi và web server
+10. Chia sẻ Wi-Fi và web server (Đã hoàn thành — Ktor Server & Web UI)
 11. SMB, SFTP và WebDAV
 12. Kho riêng tư và mã hóa
 13. Tablet, Android TV và power user
