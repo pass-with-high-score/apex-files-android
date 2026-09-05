@@ -35,6 +35,9 @@ This project uses specialized Gemini CLI skills to automate complex tasks. When 
 
 - **Implementing New Features:** Use the `cook` skill. It provides a structured "kitchen" workflow (Research -> Recipe -> Cook -> Taste Test).
   - Location: `.gemini/skills/cook/SKILL.md`
+- **Creating New Modules:** Use the `create-module` skill. It automates generating Android library/feature modules and updates `settings.gradle.kts`.
+  - Location: `.agents/skills/create-module/SKILL.md`
+  - Command: `./scripts/create-module.sh <module_name> [--type lib|compose-lib|feature]`
 - **Releasing New Versions:** Use the `upgrade-app` skill. It automates version bumping, changelog generation, tagging, and GitHub releases.
   - Location: `.gemini/skills/upgrade-app/SKILL.md`
 - **Translating CSV Files:** Use the `csv-translator` skill. It handles splitting large files, translation, and auto-importing strings into Android resources.

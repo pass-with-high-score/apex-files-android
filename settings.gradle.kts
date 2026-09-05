@@ -24,3 +24,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "ApexFileManager"
 include(":app")
+include(":core:base")
+include(":core:designsystem")
+include(":core:storage")

@@ -17,4 +17,7 @@ local.properties
 # Agent skills & local IDE configs
 .agents/*
 !.agents/rules/
+!.agents/skills/
+.agents/skills/*
+!.agents/skills/create-module/
 .gemini/
