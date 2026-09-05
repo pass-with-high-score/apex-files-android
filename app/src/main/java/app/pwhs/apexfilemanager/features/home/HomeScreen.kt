@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.CleaningServices
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -50,6 +52,8 @@ fun HomeScreen(
     onNavigateToExplorer: (String) -> Unit,
     onNavigateToSearch: () -> Unit,
     onNavigateToRecents: () -> Unit,
+    onNavigateToTrash: () -> Unit,
+    onNavigateToCleaner: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -69,6 +73,12 @@ fun HomeScreen(
                 }
                 is HomeUiEvent.NavigateToRecents -> {
                     onNavigateToRecents()
+                }
+                is HomeUiEvent.NavigateToTrash -> {
+                    onNavigateToTrash()
+                }
+                is HomeUiEvent.NavigateToCleaner -> {
+                    onNavigateToCleaner()
                 }
             }
         }
@@ -208,6 +218,84 @@ fun HomeContent(
                                         Spacer(modifier = Modifier.height(2.dp))
                                         Text(
                                             text = stringResource(R.string.home_recents_desc),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        item {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onAction(HomeUiAction.CleanerClick) },
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                )
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.CleaningServices,
+                                        contentDescription = stringResource(R.string.home_cleaner_title),
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.padding(end = 16.dp)
+                                    )
+                                    Column {
+                                        Text(
+                                            text = stringResource(R.string.home_cleaner_title),
+                                            style = MaterialTheme.typography.titleSmall,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Spacer(modifier = Modifier.height(2.dp))
+                                        Text(
+                                            text = stringResource(R.string.home_cleaner_desc),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        item {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onAction(HomeUiAction.TrashClick) },
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                )
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.DeleteSweep,
+                                        contentDescription = stringResource(R.string.home_trash_title),
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.padding(end = 16.dp)
+                                    )
+                                    Column {
+                                        Text(
+                                            text = stringResource(R.string.home_trash_title),
+                                            style = MaterialTheme.typography.titleSmall,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Spacer(modifier = Modifier.height(2.dp))
+                                        Text(
+                                            text = stringResource(R.string.home_trash_desc),
                                             style = MaterialTheme.typography.bodySmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )

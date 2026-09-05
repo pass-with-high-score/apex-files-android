@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="trash_title">Thùng rác</string>
+    <string name="trash_empty">Thùng rác trống</string>
+    <string name="trash_empty_desc">Các tệp bạn xóa sẽ xuất hiện ở đây để bạn có thể khôi phục lại khi cần</string>
+    <string name="trash_restore">Khôi phục</string>
+    <string name="trash_delete">Xóa vĩnh viễn</string>
+    <string name="trash_empty_all">Dọn sạch thùng rác</string>
+    <string name="trash_confirm_empty_title">Dọn sạch thùng rác?</string>
+    <string name="trash_confirm_empty_desc">Toàn bộ tệp trong thùng rác sẽ bị xóa vĩnh viễn và không thể khôi phục lại.</string>
+    <string name="trash_confirm_delete_single">Xóa vĩnh viễn tệp này?</string>
+    <string name="trash_item_count">%1$d mục</string>
+    <string name="trash_restored_success">Đã khôi phục tệp thành công</string>
+    <string name="trash_deleted_success">Đã xóa vĩnh viễn tệp</string>
+    <string name="trash_emptied_success">Đã dọn sạch thùng rác</string>
+
+    <string name="cleaner_title">Dọn dung lượng</string>
+    <string name="cleaner_storage_analysis">Phân tích bộ nhớ</string>
+    <string name="cleaner_used_total">Đã dùng %1$s / %2$s (%3$d%%)</string>
+    <string name="cleaner_cat_images">Hình ảnh</string>
+    <string name="cleaner_cat_videos">Video</string>
+    <string name="cleaner_cat_audio">Âm thanh</string>
+    <string name="cleaner_cat_documents">Tài liệu</string>
+    <string name="cleaner_cat_archives">Tệp nén</string>
+    <string name="cleaner_cat_apks">Tệp APK</string>
+    <string name="cleaner_cat_others">Khác</string>
+    <string name="cleaner_large_files_title">Tệp dung lượng lớn (&gt; 50MB)</string>
+    <string name="cleaner_junk_files_title">Tệp rác có thể dọn an toàn</string>
+    <string name="cleaner_clean_now">Dọn dẹp ngay (%1$s)</string>
+    <string name="cleaner_clean_success">Đã dọn dẹp giải phóng %1$s</string>
+    <string name="cleaner_no_junk">Bộ nhớ sạch sẽ, không có tệp rác</string>
+    <string name="cleaner_no_large">Không có tệp dung lượng lớn</string>
+    <string name="cleaner_storage_distribution">Phân bổ dung lượng</string>
+    <string name="cleaner_select_all_format">Chọn tất cả (%1$d tệp)</string>
+    <string name="cleaner_confirm">Xác nhận</string>
+    <string name="cleaner_cancel">Hủy</string>
+</resources>

@@ -29,6 +29,12 @@ class MainActivity : BaseActivity() {
                     },
                     onNavigateToRecents = {
                         startActivity(app.pwhs.apexfilemanager.features.recents.RecentsActivity.createIntent(this))
+                    },
+                    onNavigateToTrash = {
+                        startActivity(app.pwhs.apexfilemanager.features.cleaner.trash.TrashActivity.createIntent(this))
+                    },
+                    onNavigateToCleaner = {
+                        startActivity(app.pwhs.apexfilemanager.features.cleaner.analysis.CleanerActivity.createIntent(this))
                     }
                 )
             }

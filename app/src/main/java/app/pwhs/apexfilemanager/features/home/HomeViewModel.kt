@@ -37,6 +37,12 @@ class HomeViewModel(
             is HomeUiAction.RecentsClick -> {
                 sendEvent(HomeUiEvent.NavigateToRecents)
             }
+            is HomeUiAction.TrashClick -> {
+                sendEvent(HomeUiEvent.NavigateToTrash)
+            }
+            is HomeUiAction.CleanerClick -> {
+                sendEvent(HomeUiEvent.NavigateToCleaner)
+            }
             is HomeUiAction.VolumeClick -> {
                 sendEvent(HomeUiEvent.NavigateToExplorer(action.volume.path))
             }

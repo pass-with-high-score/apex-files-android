@@ -60,6 +60,16 @@
             android:exported="false"
             android:theme="@style/Theme.ApexFileManager" />
 
+        <activity
+            android:name="app.pwhs.apexfilemanager.features.cleaner.trash.TrashActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ApexFileManager" />
+
+        <activity
+            android:name="app.pwhs.apexfilemanager.features.cleaner.analysis.CleanerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ApexFileManager" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

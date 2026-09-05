@@ -13,4 +13,8 @@
     <string name="home_quick_access">Truy cập nhanh</string>
     <string name="home_recents_title">Tệp gần đây</string>
     <string name="home_recents_desc">Xem các tệp được mở hoặc sửa đổi gần đây</string>
+    <string name="home_trash_title">Thùng rác</string>
+    <string name="home_trash_desc">Khôi phục hoặc xóa vĩnh viễn tệp</string>
+    <string name="home_cleaner_title">Dọn dung lượng</string>
+    <string name="home_cleaner_desc">Giải phóng bộ nhớ và phân tích tệp lớn</string>
 </resources>

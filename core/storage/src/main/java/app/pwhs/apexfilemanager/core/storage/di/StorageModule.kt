@@ -28,4 +28,21 @@ val storageModule = module {
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.ExtractArchiveUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CreateArchiveUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetRecentFilesUseCase(get()) }
+
+    single<app.pwhs.apexfilemanager.core.storage.domain.repository.TrashRepository> {
+        app.pwhs.apexfilemanager.core.storage.data.repository.TrashRepositoryImpl()
+    }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetTrashItemsUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.MoveToTrashUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.RestoreTrashItemUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.DeleteTrashPermanentlyUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.EmptyTrashUseCase(get()) }
+
+    single<app.pwhs.apexfilemanager.core.storage.domain.repository.CleanerRepository> {
+        app.pwhs.apexfilemanager.core.storage.data.repository.CleanerRepositoryImpl()
+    }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.AnalyzeStorageUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetLargeFilesUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetJunkFilesUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CleanJunkFilesUseCase(get()) }
 }

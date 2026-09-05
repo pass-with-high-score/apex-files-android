@@ -4,6 +4,7 @@ import android.app.Application
 import app.pwhs.apexfilemanager.core.storage.di.storageModule
 import app.pwhs.apexfilemanager.di.appModule
 import app.pwhs.apexfilemanager.features.archive.di.archiveModule
+import app.pwhs.apexfilemanager.features.cleaner.di.cleanerModule
 import app.pwhs.apexfilemanager.features.explorer.di.explorerModule
 import app.pwhs.apexfilemanager.features.recents.di.recentsModule
 import app.pwhs.apexfilemanager.features.search.di.searchModule
@@ -28,7 +29,8 @@ class ApexApplication : Application() {
                 searchModule,
                 archiveModule,
                 recentsModule,
-                viewerModule
+                viewerModule,
+                cleanerModule
             )
         }
     }
