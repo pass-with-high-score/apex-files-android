@@ -83,6 +83,8 @@ class ExplorerViewModel(
         }
         if (item.isDirectory) {
             loadDirectory(item.path)
+        } else if (isApkFile(item.name)) {
+            sendEvent(ExplorerUiEvent.OpenApkDetail(item.path))
         } else if (isArchiveFile(item.name)) {
             sendEvent(ExplorerUiEvent.OpenArchive(item.path))
         } else if (isImageFile(item.name, item.mimeType)) {
@@ -94,9 +96,13 @@ class ExplorerViewModel(
         }
     }
 
+    private fun isApkFile(name: String): Boolean {
+        return name.endsWith(".apk", ignoreCase = true)
+    }
+
     private fun isArchiveFile(name: String): Boolean {
         val ext = name.substringAfterLast('.', "").lowercase()
-        return ext in setOf("zip", "rar", "7z", "tar", "gz", "bz2", "xz", "apk", "jar")
+        return ext in setOf("zip", "rar", "7z", "tar", "gz", "bz2", "xz", "jar")
     }
 
     private fun isImageFile(name: String, mimeType: String): Boolean {

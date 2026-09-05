@@ -35,6 +35,9 @@ class MainActivity : BaseActivity() {
                     },
                     onNavigateToCleaner = {
                         startActivity(app.pwhs.apexfilemanager.features.cleaner.analysis.CleanerActivity.createIntent(this))
+                    },
+                    onNavigateToApps = {
+                        startActivity(app.pwhs.apexfilemanager.features.appmanager.list.AppManagerActivity.createIntent(this))
                     }
                 )
             }

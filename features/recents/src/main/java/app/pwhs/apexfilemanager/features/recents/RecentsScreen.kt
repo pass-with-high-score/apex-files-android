@@ -93,6 +93,17 @@ fun RecentsScreen(
                         Toast.makeText(context, "Không thể mở tệp nén", Toast.LENGTH_SHORT).show()
                     }
                 }
+                is RecentsUiEvent.OpenApkDetail -> {
+                    try {
+                        val clazz = Class.forName("app.pwhs.apexfilemanager.features.appmanager.detail.ApkDetailActivity")
+                        val intent = android.content.Intent(context, clazz).apply {
+                            putExtra("extra_apk_path", event.path)
+                        }
+                        context.startActivity(intent)
+                    } catch (_: Exception) {
+                        Toast.makeText(context, "Không thể mở tệp APK", Toast.LENGTH_SHORT).show()
+                    }
+                }
                 is RecentsUiEvent.OpenTextEditor -> {
                     try {
                         val clazz = Class.forName("app.pwhs.apexfilemanager.features.viewer.text.TextEditorActivity")

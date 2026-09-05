@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appmanager_title">Quản lý ứng dụng</string>
+    <string name="appmanager_tab_user">Đã cài đặt (%1$d)</string>
+    <string name="appmanager_tab_system">Hệ thống (%1$d)</string>
+    <string name="appmanager_search_hint">Tìm ứng dụng…</string>
+    <string name="appmanager_backup_btn">Sao lưu</string>
+    <string name="appmanager_share_btn">Chia sẻ</string>
+    <string name="appmanager_open_btn">Mở</string>
+    <string name="appmanager_uninstall_btn">Gỡ cài đặt</string>
+    <string name="appmanager_backup_success">Đã sao lưu APK tại: %1$s</string>
+    <string name="appmanager_backup_failed">Sao lưu thất bại: %1$s</string>
+    <string name="appmanager_empty_apps">Không tìm thấy ứng dụng nào</string>
+
+    <string name="apk_detail_title">Thông tin gói APK</string>
+    <string name="apk_package_name">Gói: %1$s</string>
+    <string name="apk_version">Phiên bản: %1$s (mã %2$d)</string>
+    <string name="apk_sdk_info">Min SDK: %1$d • Target SDK: %2$d</string>
+    <string name="apk_size">Kích thước: %1$s</string>
+    <string name="apk_install_btn">Cài đặt ứng dụng</string>
+    <string name="apk_browse_archive_btn">Xem nội dung tệp APK</string>
+    <string name="apk_installing">Đang chuẩn bị cài đặt…</string>
+    <string name="apk_install_success">Cài đặt ứng dụng thành công</string>
+    <string name="apk_install_failed">Cài đặt thất bại: %1$s</string>
+    <string name="apk_installed_status_same">Đã cài đặt phiên bản này</string>
+    <string name="apk_installed_status_upgrade">Bản nâng cấp (hiện có v%1$s)</string>
+    <string name="apk_installed_status_downgrade">Bản hạ cấp (hiện có v%1$s)</string>
+    <string name="apk_installed_status_not">Chưa cài đặt trên thiết bị</string>
+</resources>

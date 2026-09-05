@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name=".ApexApplication"
@@ -67,6 +68,16 @@
 
         <activity
             android:name="app.pwhs.apexfilemanager.features.cleaner.analysis.CleanerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ApexFileManager" />
+
+        <activity
+            android:name="app.pwhs.apexfilemanager.features.appmanager.detail.ApkDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ApexFileManager" />
+
+        <activity
+            android:name="app.pwhs.apexfilemanager.features.appmanager.list.AppManagerActivity"
             android:exported="false"
             android:theme="@style/Theme.ApexFileManager" />
 

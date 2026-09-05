@@ -188,8 +188,8 @@ ApexFileManager giúp người dùng tìm đúng file nhanh, sắp xếp dễ d�
 5. ZIP, 7z và giải nén RAR
 6. Trang chủ và file gần đây
 7. Preview ảnh, video và văn bản
-8. Dọn dung lượng và thùng rác
-9. APK manager
+8. Dọn dung lượng và thùng rác (Đã hoàn thành)
+9. APK manager (Đã hoàn thành — Tích hợp Ackpine)
 10. Chia sẻ Wi-Fi và web server
 11. SMB, SFTP và WebDAV
 12. Kho riêng tư và mã hóa

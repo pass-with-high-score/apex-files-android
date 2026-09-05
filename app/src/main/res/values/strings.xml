@@ -17,4 +17,6 @@
     <string name="home_trash_desc">Khôi phục hoặc xóa vĩnh viễn tệp</string>
     <string name="home_cleaner_title">Dọn dung lượng</string>
     <string name="home_cleaner_desc">Giải phóng bộ nhớ và phân tích tệp lớn</string>
+    <string name="home_apps_title">Quản lý ứng dụng</string>
+    <string name="home_apps_desc">Xem ứng dụng đã cài, sao lưu và cài đặt APK</string>
 </resources>

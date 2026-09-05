@@ -3,6 +3,7 @@ package app.pwhs.apexfilemanager
 import android.app.Application
 import app.pwhs.apexfilemanager.core.storage.di.storageModule
 import app.pwhs.apexfilemanager.di.appModule
+import app.pwhs.apexfilemanager.features.appmanager.di.appManagerModule
 import app.pwhs.apexfilemanager.features.archive.di.archiveModule
 import app.pwhs.apexfilemanager.features.cleaner.di.cleanerModule
 import app.pwhs.apexfilemanager.features.explorer.di.explorerModule
@@ -30,7 +31,8 @@ class ApexApplication : Application() {
                 archiveModule,
                 recentsModule,
                 viewerModule,
-                cleanerModule
+                cleanerModule,
+                appManagerModule
             )
         }
     }

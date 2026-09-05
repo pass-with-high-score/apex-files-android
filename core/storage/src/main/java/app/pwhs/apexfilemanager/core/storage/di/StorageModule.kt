@@ -45,4 +45,11 @@ val storageModule = module {
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetLargeFilesUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetJunkFilesUseCase(get()) }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CleanJunkFilesUseCase(get()) }
+
+    single<app.pwhs.apexfilemanager.core.storage.domain.repository.AppRepository> {
+        app.pwhs.apexfilemanager.core.storage.data.repository.AppRepositoryImpl(androidContext())
+    }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetApkInfoUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetInstalledAppsUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.BackupAppUseCase(get()) }
 }

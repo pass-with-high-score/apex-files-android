@@ -19,6 +19,7 @@ sealed interface RecentsUiAction : UiAction {
 sealed interface RecentsUiEvent : UiEvent {
     data class OpenFileExternal(val path: String, val mimeType: String) : RecentsUiEvent
     data class OpenArchive(val path: String) : RecentsUiEvent
+    data class OpenApkDetail(val path: String) : RecentsUiEvent
     data class OpenTextEditor(val path: String) : RecentsUiEvent
     data class OpenImageViewer(val path: String) : RecentsUiEvent
     data class ShowToast(val message: String) : RecentsUiEvent
