@@ -8,7 +8,13 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import app.pwhs.apexfilemanager.core.storage.domain.model.AppSettings
+import app.pwhs.apexfilemanager.core.storage.domain.model.ThemeMode
+import app.pwhs.apexfilemanager.core.storage.domain.repository.SettingsRepository
+import org.koin.core.context.GlobalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -24,18 +30,34 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun ApexFileManagerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    darkTheme: Boolean? = null,
+    dynamicColor: Boolean? = null,
     content: @Composable () -> Unit
 ) {
+    val settingsRepo: SettingsRepository? = try {
+        GlobalContext.get().getOrNull()
+    } catch (_: Throwable) {
+        null
+    }
+
+    val settings by (settingsRepo?.getSettings() ?: kotlinx.coroutines.flow.flowOf(AppSettings()))
+        .collectAsState(initial = AppSettings())
+
+    val isDark = darkTheme ?: when (settings.themeMode) {
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+    }
+
+    val useDynamicColor = dynamicColor ?: settings.dynamicColor
+
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        useDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (isDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
+        isDark -> DarkColorScheme
         else -> LightColorScheme
     }
 

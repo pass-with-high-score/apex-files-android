@@ -34,6 +34,8 @@ android {
 
 dependencies {
     implementation(project(":core:base"))
+    api(project(":core:storage"))
+    implementation(libs.koin.core)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
