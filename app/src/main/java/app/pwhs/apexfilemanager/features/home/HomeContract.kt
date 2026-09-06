@@ -63,6 +63,7 @@ sealed interface HomeUiEvent : UiEvent {
     data object NavigateToTrash : HomeUiEvent
     data object NavigateToCleaner : HomeUiEvent
     data object NavigateToApps : HomeUiEvent
+    data object NavigateToApkList : HomeUiEvent
     data object NavigateToWifiShare : HomeUiEvent
     data object NavigateToNetwork : HomeUiEvent
     data object NavigateToVault : HomeUiEvent

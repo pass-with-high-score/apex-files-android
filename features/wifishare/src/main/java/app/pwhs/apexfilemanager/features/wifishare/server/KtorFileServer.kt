@@ -34,13 +34,14 @@ class KtorFileServer(
     private val rootPath: String
         get() = Environment.getExternalStorageDirectory().absolutePath
 
-    val isRunning: Boolean
-        get() = engine != null
+    var lastError: Throwable? = null
+        private set
 
-    suspend fun start(port: Int = 8080): Result<Unit> = withContext(Dispatchers.IO) {
-        try {
+    fun start(port: Int = 8080): Boolean {
+        return try {
+            lastError = null
             if (engine != null) {
-                return@withContext Result.success(Unit)
+                return true
             }
 
             val server = embeddedServer(CIO, port = port, host = "0.0.0.0") {
@@ -104,16 +105,17 @@ class KtorFileServer(
 
             server.start(wait = false)
             engine = server
-            Result.success(Unit)
+            true
         } catch (e: Exception) {
+            lastError = e
             engine = null
-            Result.failure(e)
+            false
         }
     }
 
-    suspend fun stop() = withContext(Dispatchers.IO) {
+    fun stop() {
         try {
-            engine?.stop(1000, 2000)
+            engine?.stop(500, 1000)
         } catch (_: Exception) {
         } finally {
             engine = null

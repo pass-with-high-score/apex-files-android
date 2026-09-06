@@ -56,6 +56,7 @@ fun HomeScreen(
     onNavigateToTrash: () -> Unit,
     onNavigateToCleaner: () -> Unit,
     onNavigateToApps: () -> Unit,
+    onNavigateToApkList: () -> Unit,
     onNavigateToWifiShare: () -> Unit,
     onNavigateToNetwork: () -> Unit,
     onNavigateToVault: () -> Unit,
@@ -88,6 +89,9 @@ fun HomeScreen(
                 }
                 is HomeUiEvent.NavigateToApps -> {
                     onNavigateToApps()
+                }
+                is HomeUiEvent.NavigateToApkList -> {
+                    onNavigateToApkList()
                 }
                 is HomeUiEvent.NavigateToWifiShare -> {
                     onNavigateToWifiShare()

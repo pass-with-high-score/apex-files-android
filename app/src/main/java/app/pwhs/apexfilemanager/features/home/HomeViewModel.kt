@@ -97,7 +97,7 @@ class HomeViewModel(
                 sendEvent(HomeUiEvent.NavigateToSearch)
             }
             HomeCategory.APKS -> {
-                sendEvent(HomeUiEvent.NavigateToApps)
+                sendEvent(HomeUiEvent.NavigateToApkList)
             }
             HomeCategory.RECENTS -> {
                 sendEvent(HomeUiEvent.NavigateToRecents)

@@ -1,5 +1,8 @@
 package app.pwhs.apexfilemanager.core.storage.data.repository
 
+import android.content.Context
+import android.os.Environment
+import android.provider.MediaStore
 import app.pwhs.apexfilemanager.core.storage.data.compat.StorageManagerCompat
 import app.pwhs.apexfilemanager.core.storage.domain.model.ConflictStrategy
 import app.pwhs.apexfilemanager.core.storage.domain.model.FileItem
@@ -14,7 +17,9 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.net.URLConnection
 
-class FileRepositoryImpl : FileRepository {
+class FileRepositoryImpl(
+    private val context: Context
+) : FileRepository {
 
     override fun getFilesInDirectory(directoryPath: String, showHidden: Boolean): Flow<List<FileItem>> = flow {
         val dir = File(directoryPath)
@@ -51,29 +56,146 @@ class FileRepositoryImpl : FileRepository {
     }.flowOn(Dispatchers.IO)
 
     override fun getRecentFiles(limit: Int): Flow<List<FileItem>> = flow {
-        val rootDir = android.os.Environment.getExternalStorageDirectory()
-        if (!rootDir.exists() || !rootDir.canRead()) {
-            emit(emptyList())
-            return@flow
-        }
-
         val results = mutableListOf<FileItem>()
+        val uri = MediaStore.Files.getContentUri("external")
+        val projection = arrayOf(
+            MediaStore.Files.FileColumns._ID,
+            MediaStore.Files.FileColumns.DATA,
+            MediaStore.Files.FileColumns.DISPLAY_NAME,
+            MediaStore.Files.FileColumns.SIZE,
+            MediaStore.Files.FileColumns.MIME_TYPE,
+            MediaStore.Files.FileColumns.DATE_MODIFIED
+        )
+        val selection = "${MediaStore.Files.FileColumns.MEDIA_TYPE} != ${MediaStore.Files.FileColumns.MEDIA_TYPE_NONE} OR ${MediaStore.Files.FileColumns.MIME_TYPE} IS NOT NULL"
+        val sortOrder = "${MediaStore.Files.FileColumns.DATE_MODIFIED} DESC LIMIT $limit"
+
         try {
-            rootDir.walkTopDown()
-                .onEnter { dir ->
-                    val abs = dir.absolutePath
-                    !abs.contains("/Android/data") && !abs.contains("/Android/obb")
+            context.contentResolver.query(uri, projection, selection, null, sortOrder)?.use { cursor ->
+                val dataCol = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)
+                val nameCol = cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME)
+                val sizeCol = cursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE)
+                val mimeCol = cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE)
+                val dateCol = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_MODIFIED)
+
+                while (cursor.moveToNext() && results.size < limit) {
+                    val path = if (dataCol != -1) cursor.getString(dataCol) else null
+                    if (path != null) {
+                        val file = File(path)
+                        if (file.exists() && file.isFile && !file.name.startsWith(".")) {
+                            val name = if (nameCol != -1) cursor.getString(nameCol) ?: file.name else file.name
+                            val size = if (sizeCol != -1) cursor.getLong(sizeCol) else file.length()
+                            val mime = if (mimeCol != -1) cursor.getString(mimeCol) ?: "*/*" else "*/*"
+                            val modified = if (dateCol != -1) cursor.getLong(dateCol) * 1000L else file.lastModified()
+
+                            results.add(
+                                FileItem(
+                                    id = path,
+                                    name = name,
+                                    path = path,
+                                    sizeBytes = size,
+                                    isDirectory = false,
+                                    mimeType = mime,
+                                    modifiedTimestamp = modified,
+                                    isHidden = false
+                                )
+                            )
+                        }
+                    }
                 }
-                .filter { it.isFile && !it.name.startsWith(".") }
-                .forEach { file ->
-                    results.add(mapToFileItem(file))
-                }
+            }
         } catch (_: Exception) { }
 
-        val recent = results
-            .sortedByDescending { it.modifiedTimestamp }
-            .take(limit)
-        emit(recent)
+        // Fallback: If media store returns empty, scan common directories with depth 1
+        if (results.isEmpty()) {
+            val commonDirs = listOf(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+            )
+            for (dir in commonDirs) {
+                if (dir.exists() && dir.canRead()) {
+                    dir.listFiles()?.filter { it.isFile && !it.name.startsWith(".") }?.forEach { f ->
+                        results.add(mapToFileItem(f))
+                    }
+                }
+            }
+            results.sortByDescending { it.modifiedTimestamp }
+            emit(results.take(limit))
+        } else {
+            emit(results)
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override fun getApkFiles(): Flow<List<FileItem>> = flow {
+        val results = mutableListOf<FileItem>()
+        val uri = MediaStore.Files.getContentUri("external")
+        val projection = arrayOf(
+            MediaStore.Files.FileColumns._ID,
+            MediaStore.Files.FileColumns.DATA,
+            MediaStore.Files.FileColumns.DISPLAY_NAME,
+            MediaStore.Files.FileColumns.SIZE,
+            MediaStore.Files.FileColumns.MIME_TYPE,
+            MediaStore.Files.FileColumns.DATE_MODIFIED
+        )
+        val selection = "${MediaStore.Files.FileColumns.DATA} LIKE '%.apk' OR ${MediaStore.Files.FileColumns.MIME_TYPE} = 'application/vnd.android.package-archive'"
+        val sortOrder = "${MediaStore.Files.FileColumns.DATE_MODIFIED} DESC"
+
+        try {
+            context.contentResolver.query(uri, projection, selection, null, sortOrder)?.use { cursor ->
+                val dataCol = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)
+                val nameCol = cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME)
+                val sizeCol = cursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE)
+                val mimeCol = cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE)
+                val dateCol = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_MODIFIED)
+
+                while (cursor.moveToNext()) {
+                    val path = if (dataCol != -1) cursor.getString(dataCol) else null
+                    if (path != null) {
+                        val file = File(path)
+                        if (file.exists() && file.isFile && file.name.endsWith(".apk", ignoreCase = true)) {
+                            val name = if (nameCol != -1) cursor.getString(nameCol) ?: file.name else file.name
+                            val size = if (sizeCol != -1) cursor.getLong(sizeCol) else file.length()
+                            val mime = if (mimeCol != -1) cursor.getString(mimeCol) ?: "application/vnd.android.package-archive" else "application/vnd.android.package-archive"
+                            val modified = if (dateCol != -1) cursor.getLong(dateCol) * 1000L else file.lastModified()
+
+                            results.add(
+                                FileItem(
+                                    id = path,
+                                    name = name,
+                                    path = path,
+                                    sizeBytes = size,
+                                    isDirectory = false,
+                                    mimeType = mime,
+                                    modifiedTimestamp = modified,
+                                    isHidden = false
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        } catch (_: Exception) { }
+
+        // Fallback scan Download & Backup dirs if MediaStore empty
+        if (results.isEmpty()) {
+            val searchDirs = listOf(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                File(Environment.getExternalStorageDirectory(), "ApexFileManager/Backup"),
+                Environment.getExternalStorageDirectory()
+            )
+            for (dir in searchDirs) {
+                if (dir.exists() && dir.canRead()) {
+                    dir.listFiles()?.filter { it.isFile && it.name.endsWith(".apk", ignoreCase = true) }?.forEach { f ->
+                        if (results.none { it.path == f.absolutePath }) {
+                            results.add(mapToFileItem(f))
+                        }
+                    }
+                }
+            }
+        }
+
+        emit(results.sortedByDescending { it.modifiedTimestamp })
     }.flowOn(Dispatchers.IO)
 
     override suspend fun createFolder(parentPath: String, folderName: String): Result<FileItem> = withContext(Dispatchers.IO) {

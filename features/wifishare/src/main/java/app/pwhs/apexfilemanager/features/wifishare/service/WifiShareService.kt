@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 class WifiShareService : Service() {
 
-    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var fileServer: KtorFileServer
 
     override fun onCreate() {
@@ -46,25 +46,32 @@ class WifiShareService : Service() {
     }
 
     private fun startServer(ip: String, port: Int) {
+        val initialNotification = buildNotification("Đang khởi động...")
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(
+                    NOTIFICATION_ID,
+                    initialNotification,
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+                )
+            } else {
+                startForeground(NOTIFICATION_ID, initialNotification)
+            }
+        } catch (_: Exception) { }
+
         serviceScope.launch {
             _serverState.value = ServerStatus.Starting
-            val result = fileServer.start(port)
-            result.onSuccess {
+            val success = fileServer.start(port)
+            if (success) {
                 val url = "http://$ip:$port"
                 _serverUrl.value = url
                 _serverState.value = ServerStatus.Running(url)
                 val notification = buildNotification(url)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    startForeground(
-                        NOTIFICATION_ID,
-                        notification,
-                        ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-                    )
-                } else {
-                    startForeground(NOTIFICATION_ID, notification)
-                }
-            }.onFailure { error ->
-                _serverState.value = ServerStatus.Error(error.localizedMessage ?: "Start failed")
+                val manager = getSystemService(NotificationManager::class.java)
+                manager?.notify(NOTIFICATION_ID, notification)
+            } else {
+                val error = fileServer.lastError
+                _serverState.value = ServerStatus.Error(error?.localizedMessage ?: "Start failed")
                 stopSelf()
             }
         }

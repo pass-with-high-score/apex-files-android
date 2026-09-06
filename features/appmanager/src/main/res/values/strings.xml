@@ -26,4 +26,9 @@
     <string name="apk_installed_status_upgrade">Bản nâng cấp (hiện có v%1$s)</string>
     <string name="apk_installed_status_downgrade">Bản hạ cấp (hiện có v%1$s)</string>
     <string name="apk_installed_status_not">Chưa cài đặt trên thiết bị</string>
+
+    <string name="apklist_title">Tệp cài đặt APK</string>
+    <string name="apklist_empty">Không tìm thấy tệp APK nào trên thiết bị</string>
+    <string name="apklist_count">%1$d tệp APK</string>
+    <string name="apklist_search_hint">Tìm tệp APK…</string>
 </resources>

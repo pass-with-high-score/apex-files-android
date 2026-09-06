@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface FileRepository {
     fun getFilesInDirectory(directoryPath: String, showHidden: Boolean = false): Flow<List<FileItem>>
     fun getRecentFiles(limit: Int = 50): Flow<List<FileItem>>
+    fun getApkFiles(): Flow<List<FileItem>>
     suspend fun createFolder(parentPath: String, folderName: String): Result<FileItem>
     suspend fun renameFile(filePath: String, newName: String): Result<FileItem>
     suspend fun deleteFiles(filePaths: List<String>): Result<Int>
