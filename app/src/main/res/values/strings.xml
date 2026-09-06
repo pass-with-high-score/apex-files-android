@@ -25,4 +25,22 @@
     <string name="home_network_desc">Kết nối máy chủ SMB, FTP, SFTP từ xa</string>
     <string name="home_vault_title">Kho riêng tư</string>
     <string name="home_vault_desc">Mã hóa bảo vệ tệp bằng AES-256</string>
+    
+    <!-- Home Revamp Strings -->
+    <string name="home_storage_free">Còn trống %1$s</string>
+    <string name="home_storage_used">Đã dùng %1$s</string>
+    <string name="home_storage_clean_btn">Dọn dẹp</string>
+    <string name="home_media_categories">Danh mục tệp</string>
+    <string name="home_category_downloads">Tải về</string>
+    <string name="home_category_images">Hình ảnh</string>
+    <string name="home_category_videos">Video</string>
+    <string name="home_category_audio">Âm thanh</string>
+    <string name="home_category_documents">Tài liệu</string>
+    <string name="home_category_archives">Tệp nén</string>
+    <string name="home_category_apks">Tệp APK</string>
+    <string name="home_category_recents">Gần đây</string>
+    <string name="home_power_tools">Tiện ích nâng cao</string>
+    <string name="home_recent_files">Tệp gần đây</string>
+    <string name="home_recent_files_empty">Không có tệp nào gần đây</string>
+    <string name="home_view_all">Xem tất cả</string>
 </resources>

@@ -1,29 +1,20 @@
 package app.pwhs.apexfilemanager.features.home
 
-import android.text.format.Formatter
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.Android
-import androidx.compose.material.icons.filled.CleaningServices
-import androidx.compose.material.icons.filled.DeleteSweep
-import androidx.compose.material.icons.filled.Dns
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Wifi
-import app.pwhs.apexfilemanager.features.home.components.QuickAccessCard
-import app.pwhs.apexfilemanager.features.home.components.StorageVolumeCard
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,7 +22,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,7 +40,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.pwhs.apexfilemanager.R
 import app.pwhs.apexfilemanager.core.designsystem.theme.ApexFileManagerTheme
+import app.pwhs.apexfilemanager.core.storage.domain.model.FileItem
 import app.pwhs.apexfilemanager.core.storage.domain.model.StorageVolume
+import app.pwhs.apexfilemanager.features.home.components.MediaCategoriesGrid
+import app.pwhs.apexfilemanager.features.home.components.PowerToolsSection
+import app.pwhs.apexfilemanager.features.home.components.RecentFilesPreview
+import app.pwhs.apexfilemanager.features.home.components.StorageDashboardCard
 
 @Composable
 fun HomeScreen(
@@ -64,6 +59,7 @@ fun HomeScreen(
     onNavigateToWifiShare: () -> Unit,
     onNavigateToNetwork: () -> Unit,
     onNavigateToVault: () -> Unit,
+    onOpenRecentFile: (FileItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -101,6 +97,9 @@ fun HomeScreen(
                 }
                 is HomeUiEvent.NavigateToVault -> {
                     onNavigateToVault()
+                }
+                is HomeUiEvent.OpenRecentFile -> {
+                    onOpenRecentFile(event.item)
                 }
             }
         }
@@ -151,7 +150,7 @@ fun HomeContent(
                 .padding(innerPadding)
         ) {
             when {
-                state.isLoading -> {
+                state.isLoading && state.volumes.isEmpty() -> {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
                         color = MaterialTheme.colorScheme.primary
@@ -167,109 +166,76 @@ fun HomeContent(
                 }
                 else -> {
                     LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        item {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = stringResource(R.string.home_storage_overview),
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-
-                        if (state.volumes.isEmpty()) {
-                            item {
-                                Text(
-                                    text = stringResource(R.string.home_empty_storage),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        } else {
+                        // 1. Storage Volumes Section
+                        if (state.volumes.isNotEmpty()) {
                             items(state.volumes, key = { it.id }) { volume ->
-                                StorageVolumeCard(
+                                StorageDashboardCard(
                                     volume = volume,
-                                    onClick = { onAction(HomeUiAction.VolumeClick(volume)) }
+                                    onClick = { onAction(HomeUiAction.VolumeClick(volume)) },
+                                    onCleanClick = { onAction(HomeUiAction.CleanerClick) }
+                                )
+                            }
+                        }
+
+                        // 2. Media Categories Grid
+                        item {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = stringResource(R.string.home_media_categories),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                MediaCategoriesGrid(
+                                    onCategoryClick = { category ->
+                                        onAction(HomeUiAction.CategoryClick(category))
+                                    }
+                                )
+                            }
+                        }
+
+                        // 3. Recent Files Preview (nếu có)
+                        if (state.recentFiles.isNotEmpty()) {
+                            item {
+                                RecentFilesPreview(
+                                    files = state.recentFiles,
+                                    onFileClick = { item ->
+                                        onAction(HomeUiAction.RecentFileClick(item))
+                                    },
+                                    onViewAllClick = {
+                                        onAction(HomeUiAction.RecentsClick)
+                                    }
+                                )
+                            }
+                        }
+
+                        // 4. Power Tools Section
+                        item {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = stringResource(R.string.home_power_tools),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                PowerToolsSection(
+                                    onCleanerClick = { onAction(HomeUiAction.CleanerClick) },
+                                    onWifiShareClick = { onAction(HomeUiAction.WifiShareClick) },
+                                    onNetworkClick = { onAction(HomeUiAction.NetworkClick) },
+                                    onVaultClick = { onAction(HomeUiAction.VaultClick) },
+                                    onAppsClick = { onAction(HomeUiAction.AppsClick) }
                                 )
                             }
                         }
 
                         item {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = stringResource(R.string.home_quick_access),
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-
-                        item {
-                            QuickAccessCard(
-                                icon = Icons.Default.AccessTime,
-                                title = stringResource(R.string.home_recents_title),
-                                description = stringResource(R.string.home_recents_desc),
-                                onClick = { onAction(HomeUiAction.RecentsClick) }
-                            )
-                        }
-
-                        item {
-                            QuickAccessCard(
-                                icon = Icons.Default.CleaningServices,
-                                title = stringResource(R.string.home_cleaner_title),
-                                description = stringResource(R.string.home_cleaner_desc),
-                                onClick = { onAction(HomeUiAction.CleanerClick) }
-                            )
-                        }
-
-                        item {
-                            QuickAccessCard(
-                                icon = Icons.Default.DeleteSweep,
-                                title = stringResource(R.string.home_trash_title),
-                                description = stringResource(R.string.home_trash_desc),
-                                onClick = { onAction(HomeUiAction.TrashClick) }
-                            )
-                        }
-
-                        item {
-                            QuickAccessCard(
-                                icon = Icons.Default.Android,
-                                title = stringResource(R.string.home_apps_title),
-                                description = stringResource(R.string.home_apps_desc),
-                                onClick = { onAction(HomeUiAction.AppsClick) }
-                            )
-                        }
-
-                        item {
-                            QuickAccessCard(
-                                icon = Icons.Default.Wifi,
-                                title = stringResource(R.string.home_wifishare_title),
-                                description = stringResource(R.string.home_wifishare_desc),
-                                onClick = { onAction(HomeUiAction.WifiShareClick) }
-                            )
-                        }
-
-                        item {
-                            QuickAccessCard(
-                                icon = Icons.Default.Dns,
-                                title = stringResource(R.string.home_network_title),
-                                description = stringResource(R.string.home_network_desc),
-                                onClick = { onAction(HomeUiAction.NetworkClick) }
-                            )
-                        }
-
-                        item {
-                            QuickAccessCard(
-                                icon = Icons.Default.Lock,
-                                title = stringResource(R.string.home_vault_title),
-                                description = stringResource(R.string.home_vault_desc),
-                                onClick = { onAction(HomeUiAction.VaultClick) }
-                            )
+                            Spacer(modifier = Modifier.navigationBarsPadding())
                         }
                     }
                 }
@@ -285,6 +251,7 @@ fun PermissionRequestBanner(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.errorContainer
         )

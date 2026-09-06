@@ -4,7 +4,22 @@ import android.content.Intent
 import app.pwhs.apexfilemanager.core.base.UiAction
 import app.pwhs.apexfilemanager.core.base.UiEvent
 import app.pwhs.apexfilemanager.core.base.UiState
+import app.pwhs.apexfilemanager.core.storage.domain.model.FileItem
 import app.pwhs.apexfilemanager.core.storage.domain.model.StorageVolume
+
+/**
+ * Danh mục tệp trên màn hình Trang chủ.
+ */
+enum class HomeCategory {
+    DOWNLOADS,
+    IMAGES,
+    VIDEOS,
+    AUDIO,
+    DOCUMENTS,
+    ARCHIVES,
+    APKS,
+    RECENTS
+}
 
 /**
  * Trạng thái giao diện màn hình Trang chủ (Home).
@@ -13,6 +28,7 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val hasPermission: Boolean = true,
     val volumes: List<StorageVolume> = emptyList(),
+    val recentFiles: List<FileItem> = emptyList(),
     val errorMessage: String? = null
 ) : UiState
 
@@ -32,6 +48,8 @@ sealed interface HomeUiAction : UiAction {
     data object NetworkClick : HomeUiAction
     data object VaultClick : HomeUiAction
     data class VolumeClick(val volume: StorageVolume) : HomeUiAction
+    data class CategoryClick(val category: HomeCategory) : HomeUiAction
+    data class RecentFileClick(val item: FileItem) : HomeUiAction
 }
 
 /**
@@ -48,5 +66,6 @@ sealed interface HomeUiEvent : UiEvent {
     data object NavigateToWifiShare : HomeUiEvent
     data object NavigateToNetwork : HomeUiEvent
     data object NavigateToVault : HomeUiEvent
+    data class OpenRecentFile(val item: FileItem) : HomeUiEvent
 }
 

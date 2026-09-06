@@ -165,7 +165,9 @@ fun ExplorerScreen(
     }
 
     LaunchedEffect(initialPath) {
-        if (state.currentPath.isEmpty()) {
+        if (initialPath.isNotEmpty() && state.currentPath != initialPath) {
+            viewModel.onAction(ExplorerUiAction.LoadDirectory(initialPath))
+        } else if (state.currentPath.isEmpty()) {
             viewModel.onAction(ExplorerUiAction.LoadDirectory(initialPath))
         }
     }

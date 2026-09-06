@@ -15,7 +15,7 @@ class ExplorerActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         val initialPath = intent.getStringExtra(EXTRA_PATH) ?: ""
-        if (savedInstanceState == null && initialPath.isNotEmpty()) {
+        if (initialPath.isNotEmpty()) {
             viewModel.onAction(ExplorerUiAction.LoadDirectory(initialPath))
         }
 
@@ -23,6 +23,7 @@ class ExplorerActivity : BaseActivity() {
             ApexFileManagerTheme {
                 ExplorerScreen(
                     viewModel = viewModel,
+                    initialPath = initialPath,
                     onBackClick = { finish() }
                 )
             }

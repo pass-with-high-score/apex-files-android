@@ -6,5 +6,5 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    viewModel { HomeViewModel(androidApplication(), get()) }
+    viewModel { HomeViewModel(androidApplication(), get(), get()) }
 }
