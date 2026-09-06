@@ -14,7 +14,9 @@ val settingsModule = module {
             updateShowFileExtensionsUseCase = get(),
             clearAppCacheUseCase = get(),
             getAppCacheSizeUseCase = get(),
-            getPrivilegedStatusUseCase = get()
+            getPrivilegedStatusUseCase = get(),
+            requestRootAccessUseCase = get(),
+            requestShizukuAccessUseCase = get()
         )
     }
 }

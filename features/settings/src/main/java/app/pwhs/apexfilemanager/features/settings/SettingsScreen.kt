@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AdminPanelSettings
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.DarkMode
@@ -206,31 +208,69 @@ fun SettingsContent(
                 SettingGroupTitle(title = stringResource(R.string.settings_section_system))
             }
             item {
-                val rootStatus = if (state.privilegedStatus.isRootGranted) {
+                val isGranted = state.privilegedStatus.isRootGranted
+                val rootStatus = if (isGranted) {
                     "✓ Đã cấp quyền"
                 } else if (state.privilegedStatus.isRootAvailable) {
-                    "Khả dụng (Chưa cấp quyền)"
+                    "Khả dụng (Chưa cấp quyền - Nhấn để cấp)"
                 } else {
                     "Không khả dụng"
                 }
                 SettingItemRow(
                     title = stringResource(R.string.settings_root_title),
                     description = "$rootStatus - ${stringResource(R.string.settings_root_desc)}",
-                    icon = Icons.Default.AdminPanelSettings
+                    icon = Icons.Default.AdminPanelSettings,
+                    onClick = { onAction(SettingsUiAction.RequestRootClick) },
+                    trailingContent = {
+                        if (isGranted) {
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
                 )
             }
             item {
-                val shizukuStatus = if (state.privilegedStatus.isShizukuGranted) {
+                val isGranted = state.privilegedStatus.isShizukuGranted
+                val shizukuStatus = if (isGranted) {
                     "✓ Đang hoạt động"
                 } else if (state.privilegedStatus.isShizukuAvailable) {
-                    "Khả dụng (Chưa cấp quyền)"
+                    "Khả dụng (Chưa kết nối - Nhấn để kích hoạt)"
                 } else {
                     "Chưa kết nối"
                 }
                 SettingItemRow(
                     title = stringResource(R.string.settings_shizuku_title),
                     description = "$shizukuStatus - ${stringResource(R.string.settings_shizuku_desc)}",
-                    icon = Icons.Default.Terminal
+                    icon = Icons.Default.Terminal,
+                    onClick = { onAction(SettingsUiAction.RequestShizukuClick) },
+                    trailingContent = {
+                        if (isGranted) {
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
                 )
             }
             item {

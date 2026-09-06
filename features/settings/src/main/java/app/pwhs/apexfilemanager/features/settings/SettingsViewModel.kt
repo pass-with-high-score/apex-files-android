@@ -6,6 +6,8 @@ import app.pwhs.apexfilemanager.core.storage.domain.usecase.ClearAppCacheUseCase
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.GetAppCacheSizeUseCase
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.GetPrivilegedStatusUseCase
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.GetSettingsUseCase
+import app.pwhs.apexfilemanager.core.storage.domain.usecase.RequestRootAccessUseCase
+import app.pwhs.apexfilemanager.core.storage.domain.usecase.RequestShizukuAccessUseCase
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.UpdateDynamicColorUseCase
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.UpdateShowFileExtensionsUseCase
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.UpdateShowHiddenFilesUseCase
@@ -20,7 +22,9 @@ class SettingsViewModel(
     private val updateShowFileExtensionsUseCase: UpdateShowFileExtensionsUseCase,
     private val clearAppCacheUseCase: ClearAppCacheUseCase,
     private val getAppCacheSizeUseCase: GetAppCacheSizeUseCase,
-    private val getPrivilegedStatusUseCase: GetPrivilegedStatusUseCase
+    private val getPrivilegedStatusUseCase: GetPrivilegedStatusUseCase,
+    private val requestRootAccessUseCase: RequestRootAccessUseCase,
+    private val requestShizukuAccessUseCase: RequestShizukuAccessUseCase
 ) : BaseViewModel<SettingsUiState, SettingsUiAction, SettingsUiEvent>(SettingsUiState()) {
 
     init {
@@ -55,6 +59,12 @@ class SettingsViewModel(
                     updateShowFileExtensionsUseCase(action.show)
                 }
             }
+            is SettingsUiAction.RequestRootClick -> {
+                handleRequestRoot()
+            }
+            is SettingsUiAction.RequestShizukuClick -> {
+                handleRequestShizuku()
+            }
             is SettingsUiAction.ClearCache -> {
                 handleClearCache()
             }
@@ -63,6 +73,36 @@ class SettingsViewModel(
             }
             is SettingsUiAction.BackClick -> {
                 sendEvent(SettingsUiEvent.NavigateBack)
+            }
+        }
+    }
+
+    private fun handleRequestRoot() {
+        viewModelScope.launch {
+            if (uiState.value.privilegedStatus.isRootGranted) {
+                sendEvent(SettingsUiEvent.ShowToast("Đã cấp quyền Root (Superuser)"))
+                return@launch
+            }
+            val granted = requestRootAccessUseCase()
+            if (granted) {
+                sendEvent(SettingsUiEvent.ShowToast("Đã cấp quyền Root thành công!"))
+            } else {
+                sendEvent(SettingsUiEvent.ShowToast("Không thể cấp quyền Root. Hãy kiểm tra ứng dụng Magisk hoặc KernelSU."))
+            }
+        }
+    }
+
+    private fun handleRequestShizuku() {
+        viewModelScope.launch {
+            if (uiState.value.privilegedStatus.isShizukuGranted) {
+                sendEvent(SettingsUiEvent.ShowToast("Dịch vụ Shizuku đang hoạt động bình thường"))
+                return@launch
+            }
+            val granted = requestShizukuAccessUseCase()
+            if (granted) {
+                sendEvent(SettingsUiEvent.ShowToast("Đã kích hoạt quyền Shizuku thành công!"))
+            } else {
+                sendEvent(SettingsUiEvent.ShowToast("Không thể kết nối Shizuku. Hãy mở ứng dụng Shizuku để khởi chạy dịch vụ."))
             }
         }
     }

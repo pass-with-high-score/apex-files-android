@@ -22,6 +22,8 @@ sealed interface SettingsUiAction : UiAction {
     data class ToggleDynamicColor(val enabled: Boolean) : SettingsUiAction
     data class ToggleShowHiddenFiles(val show: Boolean) : SettingsUiAction
     data class ToggleShowFileExtensions(val show: Boolean) : SettingsUiAction
+    data object RequestRootClick : SettingsUiAction
+    data object RequestShizukuClick : SettingsUiAction
     data object ClearCache : SettingsUiAction
     data object ManagePermissions : SettingsUiAction
     data object BackClick : SettingsUiAction
