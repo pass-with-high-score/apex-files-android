@@ -193,7 +193,7 @@ ApexFileManager giúp người dùng tìm đúng file nhanh, sắp xếp dễ d�
 10. Chia sẻ Wi-Fi và web server (Đã hoàn thành — Ktor Server & Web UI)
 11. SMB, SFTP và WebDAV (Đã hoàn thành — SMB, FTP/FTPS, SFTP)
 12. Kho riêng tư và mã hóa (Đã hoàn thành — Safe Box, AES-256-GCM, PIN & Biometric)
-13. Tablet, Android TV và power user (Đã hoàn thành — Dual Pane Explorer, Batch Rename, Checksum MD5/SHA-1/SHA-256, Coil Async Thumbnails)
+13. Tablet, Android TV và power user (Đã hoàn thành — Dual Pane Explorer, Safari Multi-Tabs, Batch Rename, Checksum, Text Editor .bak, Hex Viewer, Coil Async Thumbnails)
 
 ## Tiêu chí hoàn thành MVP
 
