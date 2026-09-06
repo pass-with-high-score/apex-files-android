@@ -48,6 +48,7 @@ sealed interface HomeUiAction : UiAction {
     data object WifiShareClick : HomeUiAction
     data object NetworkClick : HomeUiAction
     data object VaultClick : HomeUiAction
+    data object SettingsClick : HomeUiAction
     data object RequestRootClick : HomeUiAction
     data object RequestShizukuClick : HomeUiAction
     data class SwitchAccessModeClick(val mode: app.pwhs.apexfilemanager.core.storage.domain.model.AccessMode) : HomeUiAction
@@ -71,6 +72,7 @@ sealed interface HomeUiEvent : UiEvent {
     data object NavigateToWifiShare : HomeUiEvent
     data object NavigateToNetwork : HomeUiEvent
     data object NavigateToVault : HomeUiEvent
+    data object NavigateToSettings : HomeUiEvent
     data class OpenRecentFile(val item: FileItem) : HomeUiEvent
     data class ShowToast(val message: String) : HomeUiEvent
 }

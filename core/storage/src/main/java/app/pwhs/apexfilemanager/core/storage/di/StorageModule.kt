@@ -87,5 +87,16 @@ val storageModule = module {
 
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CalculateChecksumUseCase() }
     factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.BatchRenameUseCase(get()) }
+
+    single<app.pwhs.apexfilemanager.core.storage.domain.repository.SettingsRepository> {
+        app.pwhs.apexfilemanager.core.storage.data.repository.SettingsRepositoryImpl(androidContext())
+    }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetSettingsUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.UpdateThemeModeUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.UpdateDynamicColorUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.UpdateShowHiddenFilesUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.UpdateShowFileExtensionsUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.ClearAppCacheUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetAppCacheSizeUseCase(get()) }
 }
 

@@ -1,0 +1,45 @@
+<resources>
+    <string name="settings_title">Cài đặt</string>
+
+    <!-- Theme & Display -->
+    <string name="settings_section_display">Giao diện &amp; Hiển thị</string>
+    <string name="settings_theme_title">Chủ đề giao diện</string>
+    <string name="settings_theme_system">Theo hệ thống</string>
+    <string name="settings_theme_light">Chế độ sáng</string>
+    <string name="settings_theme_dark">Chế độ tối</string>
+    <string name="settings_dynamic_color_title">Màu sắc động (Material You)</string>
+    <string name="settings_dynamic_color_desc">Tự động điều chỉnh bảng màu theo hình nền của thiết bị (Android 12+)</string>
+
+    <!-- File Management -->
+    <string name="settings_section_files">Quản lý tệp tin</string>
+    <string name="settings_show_hidden_title">Hiển thị tệp ẩn</string>
+    <string name="settings_show_hidden_desc">Hiển thị các tệp và thư mục bắt đầu bằng dấu chấm (.)</string>
+    <string name="settings_show_extensions_title">Hiển thị phần mở rộng tệp</string>
+    <string name="settings_show_extensions_desc">Hiển thị đuôi định dạng như .pdf, .mp4, .zip</string>
+
+    <!-- Privileged & System -->
+    <string name="settings_section_system">Đặc quyền &amp; Quyền hạn</string>
+    <string name="settings_root_title">Quyền Root (Superuser)</string>
+    <string name="settings_root_desc">Mở khóa toàn quyền truy cập phân vùng Linux (/)</string>
+    <string name="settings_shizuku_title">Quyền Shizuku (ADB)</string>
+    <string name="settings_shizuku_desc">Mở khóa dữ liệu ứng dụng Android/data &amp; obb</string>
+    <string name="settings_permissions_title">Quyền quản lý tệp hệ thống</string>
+    <string name="settings_permissions_desc">Quản lý cấp quyền All Files Access trong Cài đặt Android</string>
+
+    <!-- Storage & Cache -->
+    <string name="settings_section_storage">Bộ nhớ &amp; Dữ liệu tạm</string>
+    <string name="settings_clear_cache_title">Xóa bộ nhớ đệm (Cache)</string>
+    <string name="settings_clear_cache_desc">Dọn dẹp các tệp hình thu nhỏ và dữ liệu tạm ứng dụng</string>
+    <string name="settings_cache_size_format">Đang chiếm %1$s</string>
+    <string name="settings_cache_cleared_toast">Đã xóa bộ nhớ đệm thành công!</string>
+
+    <!-- About & Support -->
+    <string name="settings_section_about">Thông tin &amp; Hỗ trợ</string>
+    <string name="settings_version_title">Phiên bản ứng dụng</string>
+    <string name="settings_version_desc">Apex File Manager v1.0.0 (Build 1)</string>
+    <string name="settings_github_title">Mã nguồn &amp; Giấy phép</string>
+    <string name="settings_github_desc">Dự án mã nguồn mở tuân thủ Apache 2.0</string>
+    <string name="settings_developer_title">Nhà phát triển</string>
+    <string name="settings_developer_desc">Apex Team</string>
+    <string name="settings_btn_close">Đóng</string>
+</resources>

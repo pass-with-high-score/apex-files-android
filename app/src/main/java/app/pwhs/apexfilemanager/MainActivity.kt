@@ -9,6 +9,7 @@ import app.pwhs.apexfilemanager.features.explorer.ExplorerActivity
 import app.pwhs.apexfilemanager.features.home.HomeScreen
 import app.pwhs.apexfilemanager.features.home.HomeViewModel
 import app.pwhs.apexfilemanager.features.search.SearchActivity
+import app.pwhs.apexfilemanager.features.settings.SettingsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity() {
@@ -50,6 +51,9 @@ class MainActivity : BaseActivity() {
                     },
                     onNavigateToVault = {
                         startActivity(Intent(this, app.pwhs.apexfilemanager.features.vault.auth.VaultAuthActivity::class.java))
+                    },
+                    onNavigateToSettings = {
+                        startActivity(SettingsActivity.createIntent(this))
                     },
                     onOpenRecentFile = { file ->
                         handleOpenFile(file)

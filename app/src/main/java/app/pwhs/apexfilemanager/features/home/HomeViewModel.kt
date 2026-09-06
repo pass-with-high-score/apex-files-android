@@ -69,6 +69,9 @@ class HomeViewModel(
             is HomeUiAction.VaultClick -> {
                 sendEvent(HomeUiEvent.NavigateToVault)
             }
+            is HomeUiAction.SettingsClick -> {
+                sendEvent(HomeUiEvent.NavigateToSettings)
+            }
             is HomeUiAction.RequestRootClick -> {
                 viewModelScope.launch {
                     val granted = requestRootAccessUseCase()

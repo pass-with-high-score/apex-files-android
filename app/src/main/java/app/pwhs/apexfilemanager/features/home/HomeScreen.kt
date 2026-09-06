@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -60,6 +61,7 @@ fun HomeScreen(
     onNavigateToWifiShare: () -> Unit,
     onNavigateToNetwork: () -> Unit,
     onNavigateToVault: () -> Unit,
+    onNavigateToSettings: () -> Unit,
     onOpenRecentFile: (FileItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -102,6 +104,9 @@ fun HomeScreen(
                 is HomeUiEvent.NavigateToVault -> {
                     onNavigateToVault()
                 }
+                is HomeUiEvent.NavigateToSettings -> {
+                    onNavigateToSettings()
+                }
                 is HomeUiEvent.OpenRecentFile -> {
                     onOpenRecentFile(event.item)
                 }
@@ -140,6 +145,12 @@ fun HomeContent(
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = stringResource(R.string.home_search)
+                        )
+                    }
+                    IconButton(onClick = { onAction(HomeUiAction.SettingsClick) }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = stringResource(R.string.home_settings)
                         )
                     }
                 },
