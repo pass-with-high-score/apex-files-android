@@ -60,4 +60,11 @@
     <string name="explorer_close">Đóng</string>
     <string name="explorer_open_hex_viewer">Trình xem Hex</string>
     <string name="explorer_open_text_editor">Trình sửa văn bản</string>
+    <string name="explorer_tabs_title">Quản lý thẻ</string>
+    <string name="explorer_tabs_count">%1$d thẻ đang mở</string>
+    <string name="explorer_tab_new">Thẻ mới</string>
+    <string name="explorer_tab_close_all">Đóng tất cả thẻ</string>
+    <string name="explorer_tab_close">Đóng thẻ</string>
+    <string name="explorer_tab_items">%1$d mục</string>
+    <string name="explorer_tab_active">Đang xem</string>
 </resources>

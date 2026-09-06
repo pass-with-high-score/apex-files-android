@@ -14,11 +14,14 @@ import app.pwhs.apexfilemanager.core.storage.domain.usecase.GetDirectoryContents
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.MoveFilesUseCase
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.RenameFileUseCase
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.RenamePreviewItem
+import app.pwhs.apexfilemanager.features.explorer.model.ExplorerTab
 import app.pwhs.apexfilemanager.features.explorer.model.PathSegment
 import app.pwhs.apexfilemanager.features.explorer.model.SortOption
+import app.pwhs.apexfilemanager.features.explorer.util.ExplorerFileFilter
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.UUID
 
 class ExplorerViewModel(
     private val getDirectoryContentsUseCase: GetDirectoryContentsUseCase,
@@ -72,6 +75,13 @@ class ExplorerViewModel(
             is ExplorerUiAction.DismissChecksumDialog -> updateState { copy(showChecksumDialog = false, checksumTargetItem = null, checksumResult = null) }
             is ExplorerUiAction.OpenHexViewerAction -> sendEvent(ExplorerUiEvent.OpenHexViewer(action.item.path))
             is ExplorerUiAction.OpenTextEditorAction -> sendEvent(ExplorerUiEvent.OpenTextEditor(action.item.path))
+
+            // Safari-style Multi-Tabs
+            is ExplorerUiAction.ToggleTabsOverview -> toggleTabsOverview()
+            is ExplorerUiAction.SelectTab -> selectTab(action.tabId)
+            is ExplorerUiAction.NewTab -> createNewTab(action.path)
+            is ExplorerUiAction.CloseTab -> closeTab(action.tabId)
+            is ExplorerUiAction.CloseAllTabs -> closeAllTabs()
         }
     }
 
@@ -97,40 +107,17 @@ class ExplorerViewModel(
         }
         if (item.isDirectory) {
             loadDirectory(item.path)
-        } else if (isApkFile(item.name)) {
+        } else if (ExplorerFileFilter.isApkFile(item.name)) {
             sendEvent(ExplorerUiEvent.OpenApkDetail(item.path))
-        } else if (isArchiveFile(item.name)) {
+        } else if (ExplorerFileFilter.isArchiveFile(item.name)) {
             sendEvent(ExplorerUiEvent.OpenArchive(item.path))
-        } else if (isImageFile(item.name, item.mimeType)) {
+        } else if (ExplorerFileFilter.isImageFile(item.name, item.mimeType)) {
             sendEvent(ExplorerUiEvent.OpenImageViewer(item.path))
-        } else if (isTextOrCodeFile(item.name, item.mimeType)) {
+        } else if (ExplorerFileFilter.isTextOrCodeFile(item.name, item.mimeType)) {
             sendEvent(ExplorerUiEvent.OpenTextEditor(item.path))
         } else {
             sendEvent(ExplorerUiEvent.OpenFileExternal(item.path, item.mimeType))
         }
-    }
-
-    private fun isApkFile(name: String): Boolean = name.endsWith(".apk", ignoreCase = true)
-
-    private fun isArchiveFile(name: String): Boolean {
-        val ext = name.substringAfterLast('.', "").lowercase()
-        return ext in setOf("zip", "rar", "7z", "tar", "gz", "bz2", "xz", "jar")
-    }
-
-    private fun isImageFile(name: String, mimeType: String): Boolean {
-        if (mimeType.startsWith("image/")) return true
-        val ext = name.substringAfterLast('.', "").lowercase()
-        return ext in setOf("jpg", "jpeg", "png", "webp", "gif", "bmp")
-    }
-
-    private fun isTextOrCodeFile(name: String, mimeType: String): Boolean {
-        if (mimeType.startsWith("text/")) return true
-        val ext = name.substringAfterLast('.', "").lowercase()
-        return ext in setOf(
-            "txt", "json", "xml", "html", "htm", "css", "js", "ts", "kt", "java",
-            "py", "c", "cpp", "h", "md", "log", "properties", "gradle", "sh", "yml",
-            "yaml", "ini", "conf", "env", "sql", "csv"
-        )
     }
 
     private fun toggleSelect(item: FileItem) {
@@ -179,7 +166,7 @@ class ExplorerViewModel(
 
     private fun loadPrimaryDirectory(path: String) {
         val targetPath = path.ifEmpty { Environment.getExternalStorageDirectory().absolutePath }
-        val breadcrumbs = buildBreadcrumbs(targetPath)
+        val breadcrumbs = ExplorerFileFilter.buildBreadcrumbs(targetPath)
 
         viewModelScope.launch {
             updateState {
@@ -197,15 +184,47 @@ class ExplorerViewModel(
                     updateState { copy(isLoading = false, errorMessage = e.localizedMessage, files = emptyList()) }
                 }
                 .collect { items ->
-                    val sorted = sortFiles(items, currentState.sortOption)
-                    updateState { copy(isLoading = false, files = sorted, errorMessage = null) }
+                    val sorted = ExplorerFileFilter.sortFiles(items, currentState.sortOption)
+                    updateState {
+                        val currentTabId = activeTabId.ifEmpty { UUID.randomUUID().toString() }
+                        val folderName = File(targetPath).name.ifEmpty { "Bộ nhớ trong" }
+                        val updatedTabs = if (tabs.isEmpty()) {
+                            listOf(
+                                ExplorerTab(
+                                    id = currentTabId,
+                                    path = targetPath,
+                                    title = folderName,
+                                    breadcrumbs = breadcrumbs,
+                                    files = sorted
+                                )
+                            )
+                        } else {
+                            tabs.map { tab ->
+                                if (tab.id == currentTabId) {
+                                    tab.copy(
+                                        path = targetPath,
+                                        title = folderName,
+                                        breadcrumbs = breadcrumbs,
+                                        files = sorted
+                                    )
+                                } else tab
+                            }
+                        }
+                        copy(
+                            isLoading = false,
+                            files = sorted,
+                            errorMessage = null,
+                            activeTabId = currentTabId,
+                            tabs = updatedTabs
+                        )
+                    }
                 }
         }
     }
 
     private fun loadSecondaryDirectory(path: String) {
         val targetPath = path.ifEmpty { Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath }
-        val breadcrumbs = buildBreadcrumbs(targetPath)
+        val breadcrumbs = ExplorerFileFilter.buildBreadcrumbs(targetPath)
 
         viewModelScope.launch {
             updateState {
@@ -222,7 +241,7 @@ class ExplorerViewModel(
                     updateState { copy(secondaryIsLoading = false, secondaryFiles = emptyList()) }
                 }
                 .collect { items ->
-                    val sorted = sortFiles(items, currentState.sortOption)
+                    val sorted = ExplorerFileFilter.sortFiles(items, currentState.sortOption)
                     updateState { copy(secondaryIsLoading = false, secondaryFiles = sorted) }
                 }
         }
@@ -314,14 +333,8 @@ class ExplorerViewModel(
         }
     }
 
-    private fun deleteSelected() {
-        val paths = currentState.currentActiveSelectedItems.map { it.path }
-        deletePaths(paths)
-    }
-
-    private fun deleteSingle(item: FileItem) {
-        deletePaths(listOf(item.path))
-    }
+    private fun deleteSelected() = deletePaths(currentState.currentActiveSelectedItems.map { it.path })
+    private fun deleteSingle(item: FileItem) = deletePaths(listOf(item.path))
 
     private fun deletePaths(paths: List<String>) {
         viewModelScope.launch {
@@ -377,8 +390,8 @@ class ExplorerViewModel(
         updateState {
             copy(
                 sortOption = sort,
-                files = sortFiles(files, sort),
-                secondaryFiles = sortFiles(secondaryFiles, sort)
+                files = ExplorerFileFilter.sortFiles(files, sort),
+                secondaryFiles = ExplorerFileFilter.sortFiles(secondaryFiles, sort)
             )
         }
     }
@@ -396,41 +409,55 @@ class ExplorerViewModel(
         }
     }
 
-    private fun sortFiles(items: List<FileItem>, sort: SortOption): List<FileItem> {
-        val folders = items.filter { it.isDirectory }
-        val files = items.filter { !it.isDirectory }
+    // Safari-style Multi-Tabs handlers
+    private fun toggleTabsOverview() = updateState { copy(showTabsOverview = !showTabsOverview) }
 
-        val comparator: Comparator<FileItem> = when (sort) {
-            SortOption.NAME_ASC -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-            SortOption.NAME_DESC -> compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
-            SortOption.DATE_DESC -> compareByDescending { it.modifiedTimestamp }
-            SortOption.DATE_ASC -> compareBy { it.modifiedTimestamp }
-            SortOption.SIZE_DESC -> compareByDescending { it.sizeBytes }
-            SortOption.SIZE_ASC -> compareBy { it.sizeBytes }
+    private fun selectTab(tabId: String) {
+        val target = currentState.tabs.find { it.id == tabId } ?: return
+        updateState {
+            copy(
+                activeTabId = tabId,
+                currentPath = target.path,
+                breadcrumbs = target.breadcrumbs,
+                files = target.files,
+                selectedItems = emptySet(),
+                showTabsOverview = false
+            )
         }
-
-        return folders.sortedWith(comparator) + files.sortedWith(comparator)
+        if (target.files.isEmpty()) loadPrimaryDirectory(target.path)
     }
 
-    private fun buildBreadcrumbs(fullPath: String): List<PathSegment> {
-        val segments = mutableListOf<PathSegment>()
-        var current = File(fullPath)
-        val pathList = mutableListOf<File>()
+    private fun createNewTab(path: String?) {
+        val newPath = path ?: Environment.getExternalStorageDirectory().absolutePath
+        val newId = UUID.randomUUID().toString()
+        val newTab = ExplorerTab(id = newId, path = newPath, title = File(newPath).name.ifEmpty { "Bộ nhớ trong" })
+        updateState { copy(tabs = tabs + newTab, activeTabId = newId, showTabsOverview = false) }
+        loadPrimaryDirectory(newPath)
+    }
 
-        while (current.parentFile != null) {
-            pathList.add(0, current)
-            current = current.parentFile ?: break
+    private fun closeTab(tabId: String) {
+        val currentTabs = currentState.tabs
+        if (currentTabs.size <= 1) {
+            closeAllTabs()
+            return
         }
-        pathList.add(0, current)
+        val remaining = currentTabs.filter { it.id != tabId }
+        val newActiveId = if (currentState.activeTabId == tabId) remaining.last().id else currentState.activeTabId
+        updateState { copy(tabs = remaining, activeTabId = newActiveId) }
 
-        for (f in pathList) {
-            val displayName = if (f.absolutePath == "/") "Gốc"
-            else if (f.absolutePath == Environment.getExternalStorageDirectory().absolutePath) "Bộ nhớ"
-            else f.name
-
-            segments.add(PathSegment(name = displayName, fullPath = f.absolutePath))
+        if (currentState.activeTabId == tabId) {
+            remaining.find { it.id == newActiveId }?.let { next ->
+                updateState { copy(currentPath = next.path, breadcrumbs = next.breadcrumbs, files = next.files, selectedItems = emptySet()) }
+                if (next.files.isEmpty()) loadPrimaryDirectory(next.path)
+            }
         }
+    }
 
-        return segments
+    private fun closeAllTabs() {
+        val rootPath = Environment.getExternalStorageDirectory().absolutePath
+        val newId = UUID.randomUUID().toString()
+        val defaultTab = ExplorerTab(id = newId, path = rootPath, title = File(rootPath).name.ifEmpty { "Bộ nhớ trong" })
+        updateState { copy(tabs = listOf(defaultTab), activeTabId = newId, showTabsOverview = false) }
+        loadPrimaryDirectory(rootPath)
     }
 }

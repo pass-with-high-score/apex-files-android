@@ -62,9 +62,10 @@ import app.pwhs.apexfilemanager.features.explorer.components.ClipboardBottomBar
 import app.pwhs.apexfilemanager.features.explorer.components.ConfirmDeleteDialog
 import app.pwhs.apexfilemanager.features.explorer.components.CreateFolderDialog
 import app.pwhs.apexfilemanager.features.explorer.components.ExplorerPanesContent
-import app.pwhs.apexfilemanager.features.explorer.components.PaneFileList
+import app.pwhs.apexfilemanager.features.explorer.components.ExplorerTabsOverview
 import app.pwhs.apexfilemanager.features.explorer.components.RenameDialog
 import app.pwhs.apexfilemanager.features.explorer.components.SelectionBottomBar
+import app.pwhs.apexfilemanager.features.explorer.components.TabCounterButton
 import app.pwhs.apexfilemanager.features.explorer.model.SortOption
 import app.pwhs.apexfilemanager.features.explorer.model.ViewMode
 
@@ -79,7 +80,11 @@ fun ExplorerScreen(
     val context = LocalContext.current
 
     BackHandler {
-        viewModel.onAction(ExplorerUiAction.NavigateUp)
+        if (state.showTabsOverview) {
+            viewModel.onAction(ExplorerUiAction.ToggleTabsOverview)
+        } else {
+            viewModel.onAction(ExplorerUiAction.NavigateUp)
+        }
     }
 
     LaunchedEffect(viewModel.uiEvent) {
@@ -208,6 +213,13 @@ fun ExplorerContent(
                     }
                 },
                 actions = {
+                    // Safari-style Tab Counter
+                    TabCounterButton(
+                        count = state.tabs.size,
+                        isActive = state.showTabsOverview,
+                        onClick = { onAction(ExplorerUiAction.ToggleTabsOverview) }
+                    )
+
                     // Dual Pane toggle button
                     IconButton(onClick = { onAction(ExplorerUiAction.ToggleDualPane) }) {
                         Icon(
@@ -397,6 +409,19 @@ fun ExplorerContent(
             checksumResult = state.checksumResult,
             isLoading = state.isCalculatingChecksum,
             onDismiss = { onAction(ExplorerUiAction.DismissChecksumDialog) }
+        )
+    }
+
+    // Safari-style Multi-Tabs Overview
+    if (state.showTabsOverview) {
+        ExplorerTabsOverview(
+            tabs = state.tabs,
+            activeTabId = state.activeTabId,
+            onSelectTab = { onAction(ExplorerUiAction.SelectTab(it)) },
+            onCloseTab = { onAction(ExplorerUiAction.CloseTab(it)) },
+            onCloseAllTabs = { onAction(ExplorerUiAction.CloseAllTabs) },
+            onNewTab = { onAction(ExplorerUiAction.NewTab()) },
+            onDismiss = { onAction(ExplorerUiAction.ToggleTabsOverview) }
         )
     }
 }

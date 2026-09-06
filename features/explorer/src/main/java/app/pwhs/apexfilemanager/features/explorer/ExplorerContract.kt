@@ -6,6 +6,7 @@ import app.pwhs.apexfilemanager.core.base.UiState
 import app.pwhs.apexfilemanager.core.storage.domain.model.FileItem
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.ChecksumResult
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.RenamePreviewItem
+import app.pwhs.apexfilemanager.features.explorer.model.ExplorerTab
 import app.pwhs.apexfilemanager.features.explorer.model.PathSegment
 import app.pwhs.apexfilemanager.features.explorer.model.SortOption
 import app.pwhs.apexfilemanager.features.explorer.model.ViewMode
@@ -51,7 +52,12 @@ data class ExplorerUiState(
     val showChecksumDialog: Boolean = false,
     val checksumTargetItem: FileItem? = null,
     val checksumResult: ChecksumResult? = null,
-    val isCalculatingChecksum: Boolean = false
+    val isCalculatingChecksum: Boolean = false,
+
+    // Safari-style Multi-Tabs
+    val tabs: List<ExplorerTab> = emptyList(),
+    val activeTabId: String = "",
+    val showTabsOverview: Boolean = false
 ) : UiState {
     val isSelectionMode: Boolean
         get() = (if (activePane == ActivePane.PRIMARY) selectedItems else secondarySelectedItems).isNotEmpty()
@@ -100,6 +106,13 @@ sealed interface ExplorerUiAction : UiAction {
     data object DismissChecksumDialog : ExplorerUiAction
     data class OpenHexViewerAction(val item: FileItem) : ExplorerUiAction
     data class OpenTextEditorAction(val item: FileItem) : ExplorerUiAction
+
+    // Safari-style Multi-Tabs
+    data object ToggleTabsOverview : ExplorerUiAction
+    data class SelectTab(val tabId: String) : ExplorerUiAction
+    data class NewTab(val path: String? = null) : ExplorerUiAction
+    data class CloseTab(val tabId: String) : ExplorerUiAction
+    data object CloseAllTabs : ExplorerUiAction
 }
 
 sealed interface ExplorerUiEvent : UiEvent {
