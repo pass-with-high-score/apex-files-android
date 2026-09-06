@@ -22,4 +22,6 @@ interface FileRepository {
         category: app.pwhs.apexfilemanager.core.storage.domain.model.SearchCategory = app.pwhs.apexfilemanager.core.storage.domain.model.SearchCategory.ALL,
         showHidden: Boolean = false
     ): Flow<List<FileItem>>
+    suspend fun readFileText(filePath: String): Result<String>
+    suspend fun writeFileText(filePath: String, content: String): Result<Unit>
 }

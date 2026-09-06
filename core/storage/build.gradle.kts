@@ -36,6 +36,10 @@ dependencies {
     implementation(libs.commons.net)
     implementation(libs.smbj)
     implementation(libs.jsch)
+    api(libs.shizuku.api)
+    api(libs.shizuku.provider)
+    api(libs.libsu.core)
+    api(libs.libsu.io)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

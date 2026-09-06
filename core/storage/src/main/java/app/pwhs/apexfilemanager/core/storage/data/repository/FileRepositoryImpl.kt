@@ -18,23 +18,41 @@ import java.io.File
 import java.net.URLConnection
 
 class FileRepositoryImpl(
-    private val context: Context
+    private val context: Context,
+    private val privilegedManager: app.pwhs.apexfilemanager.core.storage.domain.manager.PrivilegedManager? = null
 ) : FileRepository {
+
+    private val privilegedOps = privilegedManager?.let {
+        app.pwhs.apexfilemanager.core.storage.data.manager.PrivilegedFileOperations(it)
+    }
 
     override fun getFilesInDirectory(directoryPath: String, showHidden: Boolean): Flow<List<FileItem>> = flow {
         val dir = File(directoryPath)
-        if (!dir.exists()) {
-            throw IllegalArgumentException("Thư mục không tồn tại: $directoryPath")
-        }
-        if (!dir.isDirectory) {
-            throw IllegalArgumentException("Đường dẫn không phải thư mục: $directoryPath")
-        }
+        val rawFiles = if (dir.exists() && dir.isDirectory) dir.listFiles() else null
 
-        val rawFiles = dir.listFiles()
         if (rawFiles == null) {
+            // Thử đặc quyền Root / Shizuku nếu thư mục bị hạn chế hoặc là phân vùng hệ thống
+            if (privilegedOps != null) {
+                val mode = privilegedManager?.status?.value?.activeMode
+                if (mode != app.pwhs.apexfilemanager.core.storage.domain.model.AccessMode.STANDARD || directoryPath == "/" || directoryPath.startsWith("/system") || directoryPath.startsWith("/data")) {
+                    val privItems = privilegedOps.listDirectory(directoryPath, showHidden)
+                    if (privItems.isNotEmpty() || directoryPath == "/" || directoryPath.startsWith("/system") || directoryPath.startsWith("/data") || directoryPath.contains("/Android/data")) {
+                        emit(privItems)
+                        return@flow
+                    }
+                }
+            }
+
+            if (!dir.exists()) {
+                throw IllegalArgumentException("Thư mục không tồn tại: $directoryPath")
+            }
+            if (!dir.isDirectory) {
+                throw IllegalArgumentException("Đường dẫn không phải thư mục: $directoryPath")
+            }
+
             val path = dir.absolutePath
             if (path.contains("/Android/data") || path.contains("/Android/obb")) {
-                throw SecurityException("Thư mục này bị giới hạn truy cập bởi chính sách bảo mật của hệ điều hành Android.")
+                throw SecurityException("Thư mục này bị giới hạn truy cập bởi Android. Hãy kích hoạt quyền Root hoặc Shizuku để mở khóa.")
             }
             if (!StorageManagerCompat.hasAllFilesAccess()) {
                 throw SecurityException("Ứng dụng chưa được cấp quyền quản lý tất cả tệp tin.")
@@ -205,7 +223,10 @@ class FileRepositoryImpl(
                 throw IllegalStateException("Thư mục đã tồn tại")
             }
             if (!newDir.mkdirs()) {
-                throw IllegalStateException("Không thể tạo thư mục tại: $parentPath")
+                val success = privilegedOps?.createFolder(parentPath, folderName) ?: false
+                if (!success) {
+                    throw IllegalStateException("Không thể tạo thư mục tại: $parentPath")
+                }
             }
             FileItem(
                 id = newDir.absolutePath,
@@ -223,15 +244,17 @@ class FileRepositoryImpl(
     override suspend fun renameFile(filePath: String, newName: String): Result<FileItem> = withContext(Dispatchers.IO) {
         runCatching {
             val source = File(filePath)
-            if (!source.exists()) {
-                throw IllegalArgumentException("Tệp tin không tồn tại: $filePath")
-            }
-            val destination = File(source.parentFile, newName)
+            val parent = source.parentFile
+            val destination = File(parent, newName)
             if (destination.exists()) {
                 throw IllegalStateException("Tên mới đã tồn tại: $newName")
             }
-            if (!source.renameTo(destination)) {
-                throw IllegalStateException("Đổi tên tệp thất bại")
+            val renamed = if (source.exists()) source.renameTo(destination) else false
+            if (!renamed) {
+                val privRenamed = privilegedOps?.rename(filePath, newName) ?: false
+                if (!privRenamed) {
+                    throw IllegalStateException("Đổi tên tệp thất bại")
+                }
             }
             val isDir = destination.isDirectory
             FileItem(
@@ -252,10 +275,10 @@ class FileRepositoryImpl(
             var deletedCount = 0
             for (path in filePaths) {
                 val file = File(path)
-                if (file.exists()) {
-                    if (file.deleteRecursively()) {
-                        deletedCount++
-                    }
+                if (file.exists() && file.deleteRecursively()) {
+                    deletedCount++
+                } else if (privilegedOps?.deleteFileOrFolder(path) == true) {
+                    deletedCount++
                 }
             }
             deletedCount
@@ -416,5 +439,27 @@ class FileRepositoryImpl(
             modifiedTimestamp = file.lastModified(),
             isHidden = file.name.startsWith(".")
         )
+    }
+
+    override suspend fun readFileText(filePath: String): Result<String> = withContext(Dispatchers.IO) {
+        runCatching {
+            val file = File(filePath)
+            if (file.exists() && file.canRead()) {
+                file.readText()
+            } else {
+                privilegedOps?.readFile(filePath) ?: file.readText()
+            }
+        }
+    }
+
+    override suspend fun writeFileText(filePath: String, content: String): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            try {
+                File(filePath).writeText(content)
+            } catch (e: Exception) {
+                val success = privilegedOps?.writeFile(filePath, content) ?: false
+                if (!success) throw e
+            }
+        }
     }
 }

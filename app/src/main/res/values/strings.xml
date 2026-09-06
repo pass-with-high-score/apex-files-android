@@ -43,4 +43,17 @@
     <string name="home_recent_files">Tệp gần đây</string>
     <string name="home_recent_files_empty">Không có tệp nào gần đây</string>
     <string name="home_view_all">Xem tất cả</string>
+
+    <!-- Privileged Access (Root & Shizuku) Strings -->
+    <string name="home_privileged_access_title">Đặc quyền hệ thống</string>
+    <string name="home_privileged_root_title">Quyền Root (Superuser)</string>
+    <string name="home_privileged_root_desc">Mở khóa toàn bộ phân vùng hệ thống Linux (/)</string>
+    <string name="home_privileged_shizuku_title">Quyền Shizuku (ADB)</string>
+    <string name="home_privileged_shizuku_desc">Mở khóa Android/data &amp; Android/obb</string>
+    <string name="home_privileged_grant_btn">Cấp quyền</string>
+    <string name="home_privileged_active">Đã kích hoạt</string>
+    <string name="home_privileged_not_installed">Chưa cài đặt</string>
+    <string name="home_privileged_not_running">Dịch vụ chưa chạy</string>
+    <string name="home_privileged_switch_mode">Chuyển quyền</string>
+    <string name="home_storage_root">Hệ thống (Root)</string>
 </resources>

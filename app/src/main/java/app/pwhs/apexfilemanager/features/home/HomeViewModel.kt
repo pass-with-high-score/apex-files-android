@@ -6,8 +6,13 @@ import androidx.lifecycle.viewModelScope
 import app.pwhs.apexfilemanager.core.base.BaseViewModel
 import app.pwhs.apexfilemanager.core.storage.data.compat.StorageManagerCompat
 import android.os.Environment
+import app.pwhs.apexfilemanager.core.storage.domain.usecase.CheckPrivilegedStatusUseCase
+import app.pwhs.apexfilemanager.core.storage.domain.usecase.GetPrivilegedStatusUseCase
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.GetRecentFilesUseCase
 import app.pwhs.apexfilemanager.core.storage.domain.usecase.GetStorageVolumesUseCase
+import app.pwhs.apexfilemanager.core.storage.domain.usecase.RequestRootAccessUseCase
+import app.pwhs.apexfilemanager.core.storage.domain.usecase.RequestShizukuAccessUseCase
+import app.pwhs.apexfilemanager.core.storage.domain.usecase.SwitchAccessModeUseCase
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -17,12 +22,18 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     application: Application,
     private val getStorageVolumesUseCase: GetStorageVolumesUseCase,
-    private val getRecentFilesUseCase: GetRecentFilesUseCase
+    private val getRecentFilesUseCase: GetRecentFilesUseCase,
+    private val getPrivilegedStatusUseCase: GetPrivilegedStatusUseCase,
+    private val checkPrivilegedStatusUseCase: CheckPrivilegedStatusUseCase,
+    private val requestRootAccessUseCase: RequestRootAccessUseCase,
+    private val requestShizukuAccessUseCase: RequestShizukuAccessUseCase,
+    private val switchAccessModeUseCase: SwitchAccessModeUseCase
 ) : BaseViewModel<HomeUiState, HomeUiAction, HomeUiEvent>(HomeUiState()) {
 
     private val context = application.applicationContext
 
     init {
+        observePrivilegedStatus()
         checkPermissionAndLoadData()
     }
 
@@ -57,6 +68,32 @@ class HomeViewModel(
             }
             is HomeUiAction.VaultClick -> {
                 sendEvent(HomeUiEvent.NavigateToVault)
+            }
+            is HomeUiAction.RequestRootClick -> {
+                viewModelScope.launch {
+                    val granted = requestRootAccessUseCase()
+                    if (granted) {
+                        sendEvent(HomeUiEvent.ShowToast("Đã cấp quyền Root thành công!"))
+                        loadStorageVolumes()
+                    } else {
+                        sendEvent(HomeUiEvent.ShowToast("Không thể cấp quyền Root. Hãy kiểm tra Magisk/KernelSU."))
+                    }
+                }
+            }
+            is HomeUiAction.RequestShizukuClick -> {
+                viewModelScope.launch {
+                    val granted = requestShizukuAccessUseCase()
+                    if (granted) {
+                        sendEvent(HomeUiEvent.ShowToast("Đã kích hoạt quyền Shizuku thành công!"))
+                    } else {
+                        sendEvent(HomeUiEvent.ShowToast("Không thể kết nối Shizuku. Hãy mở ứng dụng Shizuku."))
+                    }
+                }
+            }
+            is HomeUiAction.SwitchAccessModeClick -> {
+                viewModelScope.launch {
+                    switchAccessModeUseCase(action.mode)
+                }
             }
             is HomeUiAction.VolumeClick -> {
                 sendEvent(HomeUiEvent.NavigateToExplorer(action.volume.path))
@@ -105,6 +142,17 @@ class HomeViewModel(
         }
     }
 
+    private fun observePrivilegedStatus() {
+        viewModelScope.launch {
+            getPrivilegedStatusUseCase().collect { status ->
+                updateState { copy(privilegedStatus = status) }
+                if (status.isRootGranted) {
+                    loadStorageVolumes()
+                }
+            }
+        }
+    }
+
     private fun checkPermissionAndLoadData() {
         val hasPermission = StorageManagerCompat.hasAllFilesAccess()
         updateState { copy(hasPermission = hasPermission) }
@@ -114,6 +162,9 @@ class HomeViewModel(
     }
 
     private fun loadAllData() {
+        viewModelScope.launch {
+            checkPrivilegedStatusUseCase()
+        }
         loadStorageVolumes()
         loadRecentFiles()
     }

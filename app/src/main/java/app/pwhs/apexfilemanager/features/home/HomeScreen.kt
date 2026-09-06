@@ -105,6 +105,9 @@ fun HomeScreen(
                 is HomeUiEvent.OpenRecentFile -> {
                     onOpenRecentFile(event.item)
                 }
+                is HomeUiEvent.ShowToast -> {
+                    android.widget.Toast.makeText(context, event.message, android.widget.Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -236,6 +239,15 @@ fun HomeContent(
                                     onAppsClick = { onAction(HomeUiAction.AppsClick) }
                                 )
                             }
+                        }
+
+                        // 5. Privileged Access Section (Root & Shizuku)
+                        item {
+                            app.pwhs.apexfilemanager.features.home.components.PrivilegedAccessCard(
+                                status = state.privilegedStatus,
+                                onRequestRootClick = { onAction(HomeUiAction.RequestRootClick) },
+                                onRequestShizukuClick = { onAction(HomeUiAction.RequestShizukuClick) }
+                            )
                         }
 
                         item {

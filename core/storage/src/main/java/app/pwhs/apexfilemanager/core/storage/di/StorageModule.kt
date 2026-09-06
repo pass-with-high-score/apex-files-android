@@ -10,11 +10,20 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val storageModule = module {
-    single<StorageRepository> { StorageRepositoryImpl(androidContext()) }
-    single<FileRepository> { FileRepositoryImpl(androidContext()) }
+    single<app.pwhs.apexfilemanager.core.storage.domain.manager.PrivilegedManager> {
+        app.pwhs.apexfilemanager.core.storage.data.manager.PrivilegedManagerImpl(androidContext())
+    }
+    single<StorageRepository> { StorageRepositoryImpl(androidContext(), get()) }
+    single<FileRepository> { FileRepositoryImpl(androidContext(), get()) }
     single<app.pwhs.apexfilemanager.core.storage.domain.repository.ArchiveRepository> {
         app.pwhs.apexfilemanager.core.storage.data.repository.ArchiveRepositoryImpl()
     }
+
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.GetPrivilegedStatusUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.CheckPrivilegedStatusUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.RequestRootAccessUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.RequestShizukuAccessUseCase(get()) }
+    factory { app.pwhs.apexfilemanager.core.storage.domain.usecase.SwitchAccessModeUseCase(get()) }
 
     factory { GetStorageVolumesUseCase(get()) }
     factory { GetDirectoryContentsUseCase(get()) }

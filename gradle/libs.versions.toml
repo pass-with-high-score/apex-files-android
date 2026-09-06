@@ -19,6 +19,8 @@ jsch = "0.2.19"
 biometric = "1.2.0-alpha05"
 fragment = "1.8.6"
 coil = "2.7.0"
+shizuku = "13.1.5"
+libsu = "6.0.0"
 
 [libraries]
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
@@ -55,6 +57,10 @@ zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" 
 commons-net = { group = "commons-net", name = "commons-net", version.ref = "commonsNet" }
 smbj = { group = "com.hierynomus", name = "smbj", version.ref = "smbj" }
 jsch = { group = "com.github.mwiede", name = "jsch", version.ref = "jsch" }
+shizuku-api = { group = "dev.rikka.shizuku", name = "api", version.ref = "shizuku" }
+shizuku-provider = { group = "dev.rikka.shizuku", name = "provider", version.ref = "shizuku" }
+libsu-core = { group = "com.github.topjohnwu.libsu", name = "core", version.ref = "libsu" }
+libsu-io = { group = "com.github.topjohnwu.libsu", name = "io", version.ref = "libsu" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
