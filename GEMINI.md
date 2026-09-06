@@ -6,6 +6,7 @@
 - **Temporary Scripts Cleanup:** Nếu tạo file Python hoặc script tạm để code/parse data, bắt buộc phải xóa nó đi sau khi dùng xong để tránh rác project.
 - **Explicit Instruction Only:** Đảm bảo không tự ý làm hoặc thay đổi các logic không liên quan khi chưa nhận được yêu cầu rõ ràng từ user.
 - **Safe Modifications:** Luôn kiểm tra kỹ diff change (so sánh thay đổi) trước và sau khi sửa file để đảm bảo không xóa mất code đang có của user.
+- **No Device Control (TUYỆT ĐỐI KHÔNG ĐIỀU KHIỂN MÁY):** Tuyệt đối KHÔNG tự ý điều khiển thiết bị của người dùng qua ADB (CẤM chạy `adb shell input tap`, `adb shell input swipe`, `adb shell input keyevent`, hoặc tự ý mở app/thao tác màn hình). Mọi thao tác kiểm thử trực tiếp trên màn hình thiết bị do người dùng tự thực hiện. AI chỉ hỗ trợ build và cài APK khi có yêu cầu.
 
 ## Architectural Guidelines (BẮT BUỘC TUÂN THỦ ĐỂ TRÁNH CODE NHẦM)
 Chi tiết xem tại `.agents/rules/architecture.md`. Khi triển khai màn hình hoặc tính năng mới, AI BẮT BUỘC tuân theo:
